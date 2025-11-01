@@ -1,4 +1,5 @@
-const {Schema, model} = require("mongoose");
+const {Schema, model, Types} = require("mongoose");
+
 
 const joinRequestSchema = new Schema({
     requester: {
@@ -6,11 +7,13 @@ const joinRequestSchema = new Schema({
         ref: "User", 
         required: true
     },
+    
     post: {
         type: Types.ObjectId,
         ref: "Post",
         required: true,
     },
+
     status: {
         type: String, 
         enum: ["Pending", "Approved", "Rejected"],

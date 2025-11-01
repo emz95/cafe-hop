@@ -1,10 +1,10 @@
-const {Schema, model} = require("mongoose");
+const {Schema, model, Types} = require("mongoose");
 
 const cafeSchema = new Schema({
     name: {
         type: String, 
         required: true,
-    } 
+    }
 
     })
 

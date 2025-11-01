@@ -1,10 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
-
 const app = express();
 app.use(express.json());
 
+const usersRouter = require('./routes/users');
+app.use('/api/users', usersRouter);
 app.get('/testing', (req, res) => {
     res.send("good day");
 });

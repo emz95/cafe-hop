@@ -7,10 +7,12 @@ const postSchema = new Schema({
         required: true,
         ref: "User",
     },
+
     title: {
         type: String, 
         required: true
     },
+
     description: {
         type: String,
         required: true,
@@ -25,6 +27,11 @@ const postSchema = new Schema({
         type: String, 
         required: true
     },
+    
+    isOpenToJoin: {
+        Type: Boolean, 
+        default: false
+    }
 
 }, 
 {

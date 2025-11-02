@@ -27,11 +27,11 @@ const postSchema = new Schema({
         type: String, 
         required: true
     },
-    
+
     isOpenToJoin: {
-        Type: Boolean, 
+        type: Boolean, 
         default: false
-    }
+    },
 
 }, 
 {

@@ -4,7 +4,11 @@ const GroupChat = require('../models/GroupChat');
 
 const JoinRequest = require('../models/JoinRequest');
 
+const post = require('../models/Post');
+
 const router = express.Router();
+
+
 
 
 router.post('/', async (req, res) => {
@@ -28,12 +32,13 @@ router.post('/:id/approve', async (req, res) => {
 
         if(!joinRequest) {
             res.status(404).json({error: "not found"});
+            return;
         }
         const groupChat = await GroupChat.findOneAndUpdate(
             {post: joinRequest.post},
             {
                 $setOnInsert: {
-                    chatName: "Cafe Hop",
+                    chatName: GroupChat.findById(joinRequest.post).select('title').lean(),
                     post: joinRequest.post,
                     postAuthor: joinRequest.poster
                 },

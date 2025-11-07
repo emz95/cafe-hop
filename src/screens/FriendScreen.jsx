@@ -6,7 +6,7 @@ const FriendScreen = () => {
     <div className="friend-screen">
       <Header />
       <div className="friend-content">
-        <h2>Friends</h2>
+        <h2 className='friend-header'>Friends</h2>
         <div className="friends-section">
           <h3>Pending Friend Requests</h3>
           <p>No pending requests</p>

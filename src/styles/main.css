@@ -444,6 +444,8 @@ body {
   color: var(--declined-dark);
 }
 
+
+
 /* Friend card component */
 .friend-card {
   background: var(--bg-primary);
@@ -685,6 +687,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
   flex-wrap: wrap;
   gap: var(--spacing-md);
 }
@@ -714,6 +717,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 0;
+  padding-bottom: 1.7rem;
 }
 
 .create-trip-fab:hover {
@@ -817,6 +822,10 @@ body {
   flex-direction: column;
 }
 
+.request-header {
+  margin-top: var(--spacing-xl);
+}
+
 .request-content {
   flex: 1;
   width: 100%;
@@ -870,11 +879,16 @@ body {
 }
 
 /* Friends screen */
+
 .friend-screen {
   min-height: 100vh;
   background: var(--bg-secondary);
   display: flex;
   flex-direction: column;
+}
+
+.friend-header {
+  margin-top: var(--spacing-xl);
 }
 
 .friend-content {
@@ -883,6 +897,8 @@ body {
   max-width: 100%;
   padding: 0 clamp(1rem, 3vw, 2rem);
 }
+
+
 
 .friend-content h2 {
   color: var(--text-primary);

@@ -53,7 +53,7 @@ const MainScreen = () => {
                 <p className="description">{post.description}</p>
               </div>
               <div className="post-actions">
-                <button className="btn btn-accept">Join</button>
+                <button className="">Join</button>
               </div>
             </div>
           ))}

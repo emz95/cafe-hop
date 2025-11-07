@@ -26,21 +26,21 @@ router.get('/:id', async (req, res) => {
 =======
         const user = await User.findById(req.params.id).lean();
         if(!user) {
-            return res.status(404).json({error: 'User not found'})
+            return res.status(404).json({error: 'User not found'});
         }
         res.json(user);
 
 >>>>>>> 4773741 (added message making and then retrieving all msgs for big gc)
     } catch (err) {
-        res.status(400).json({error: err.message})
+        res.status(400).json({error: err.message});
     }
 })
 
 //delete by userID
 router.delete('/:id', async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id) 
-        if (!user) return res.status(404).json({error: 'User not found'})
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) return res.status(404).json({error: 'User not found'});
         res.json({ message: 'User deleted successfully' });
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -55,8 +55,8 @@ router.patch('/:id', async (req, res) => {
             new: true,
             runValidators: true
         });
-        if (!user) return res.status(404).json({error: 'User not found'})
-        res.json({ message: 'User updated', data: user })
+        if (!user) return res.status(404).json({error: 'User not found'});
+        res.json({ message: 'User updated', data: user });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

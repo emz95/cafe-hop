@@ -19,9 +19,18 @@ router.get('/', async (_req, res) => {
 //get by userID
 router.get('/:id', async (req, res) => {
     try {
+<<<<<<< HEAD
         const user = await User.findById(req.params.id).lean()
         if(!user) return res.status(404).json({error: 'User not found'})
         res.json(user)
+=======
+        const user = await User.findById(req.params.id).lean();
+        if(!user) {
+            return res.status(404).json({error: 'User not found'})
+        }
+        res.json(user);
+
+>>>>>>> 4773741 (added message making and then retrieving all msgs for big gc)
     } catch (err) {
         res.status(400).json({error: err.message})
     }

@@ -8,9 +8,6 @@ const post = require('../models/Post');
 
 const router = express.Router();
 
-
-
-
 router.post('/', async (req, res) => {
     try {
         const joinRequest = await JoinRequest.create(req.body);

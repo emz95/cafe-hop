@@ -611,6 +611,12 @@ body {
   font-size: 0.95rem;
 }
 
+.welcome-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
 /* Setup screen */
 .setup-screen {
   min-height: 100vh;
@@ -646,6 +652,25 @@ body {
 .setup-form {
   display: flex;
   flex-direction: column;
+}
+
+.setup-footer {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 .profile-picture-section {
@@ -772,6 +797,12 @@ body {
 .profile-contact {
   color: var(--text-secondary);
   margin: var(--spacing-sm) 0;
+}
+
+.profile-username {
+  color: var(--text-secondary);
+  margin: var(--spacing-sm) 0;
+  font-weight: 500;
 }
 
 .profile-bio {

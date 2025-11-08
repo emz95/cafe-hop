@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import InputField from '../components/InputField';
 
 const SetupScreen = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
     firstName: '',
     lastName: '',
-    phoneNumber: ''
+    number: ''
   });
 
   const handleSubmit = (e) => {
@@ -21,43 +25,61 @@ const SetupScreen = () => {
         <p className="setup-subtitle">Tell us a bit about yourself</p>
         
         <form onSubmit={handleSubmit} className="setup-form">
-          <div className="input-field">
-            <label className="input-label">First Name <span className="required">*</span></label>
-            <input
-              type="text"
-              value={formData.firstName}
-              onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-              className="input"
-              required
-            />
-          </div>
+          <InputField
+            label="Username"
+            type="text"
+            value={formData.username}
+            onChange={(e) => setFormData({...formData, username: e.target.value})}
+            required
+          />
 
-          <div className="input-field">
-            <label className="input-label">Last Name <span className="required">*</span></label>
-            <input
-              type="text"
-              value={formData.lastName}
-              onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-              className="input"
-              required
-            />
-          </div>
+          <InputField
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            required
+          />
 
-          <div className="input-field">
-            <label className="input-label">Phone Number <span className="required">*</span></label>
-            <input
-              type="tel"
-              value={formData.phoneNumber}
-              onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
-              className="input"
-              required
-            />
-          </div>
+          <InputField
+            label="Password"
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            required
+          />
+
+          <InputField
+            label="First Name"
+            type="text"
+            value={formData.firstName}
+            onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+            required
+          />
+
+          <InputField
+            label="Last Name"
+            type="text"
+            value={formData.lastName}
+            onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+            required
+          />
+
+          <InputField
+            label="Phone Number"
+            type="tel"
+            value={formData.number}
+            onChange={(e) => setFormData({...formData, number: e.target.value})}
+          />
 
           <button type="submit" className="btn btn-primary btn-large btn-full-width">
             Complete Setup
           </button>
         </form>
+
+        <p className="setup-footer">
+          Already have an account? <a href="/login" className="link">Login</a>
+        </p>
       </div>
     </div>
   );

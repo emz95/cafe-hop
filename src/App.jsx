@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import WelcomeScreen from './screens/WelcomeScreen';
 import SetupScreen from './screens/SetupScreen';
+import LoginScreen from './screens/LoginScreen';
 import MainScreen from './screens/MainScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import CafeTripPostScreen from './screens/CafeTripPostScreen';
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<WelcomeScreen />} />
         <Route path="/setup" element={<SetupScreen />} />
+        <Route path="/login" element={<LoginScreen />} />
         <Route path="/main" element={<MainScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/post" element={<CafeTripPostScreen />} />

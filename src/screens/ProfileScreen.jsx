@@ -3,9 +3,11 @@ import Header from '../components/Header';
 
 const ProfileScreen = () => {
   const user = {
+    username: 'judyhopps',
+    email: 'judy.hopps@example.com',
     firstName: 'Judy',
     lastName: 'Hopps',
-    phoneNumber: '(555) 123-4567',
+    number: '(555) 123-4567',
     bio: 'Coffee enthusiast!'
   };
 
@@ -26,7 +28,9 @@ const ProfileScreen = () => {
           </div>
           <div className="profile-details">
             <h2>{user.firstName} {user.lastName}</h2>
-            <p className="profile-contact">Mobile: {user.phoneNumber}</p>
+            <p className="profile-username">@{user.username}</p>
+            <p className="profile-contact">Email: {user.email}</p>
+            <p className="profile-contact">Mobile: {user.number}</p>
             <p className="profile-bio">Bio: {user.bio}</p>
           </div>
         </div>

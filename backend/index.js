@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 
 const usersRouter = require('./routes/users');
@@ -11,7 +13,7 @@ const joinRequestsRouter = require('./routes/joinRequests');
 
 app.use('/api/posts', postsRouter);
 app.use('/api/users', usersRouter);
-app.use(/api/joinRequests, joinRequestsRouter);
+app.use('/api/joinRequests', joinRequestsRouter);
 
 app.get('/testing', (req, res) => {
     res.send("good day");

@@ -4,6 +4,15 @@ const {Schema, model, Types} = require("mongoose");
 const userSchema = new Schema ({
     username: {
         type: String,
+        required: true,
+        unique: true,
+    },
+    firstName: {
+        type: String,
+        required: true
+    }, 
+    lastName: {
+        type: String,
         required: true
     },
     email: {
@@ -11,12 +20,17 @@ const userSchema = new Schema ({
         required: true,
         unique: true,
         match: /@ucla\.edu$/i
-
     },
     number: {
         type: String
     },
-
+    password: {
+        type: String,
+        required: true
+    },
+},
+{
+    timestamps: true
 })
 
 module.exports = model('User', userSchema);

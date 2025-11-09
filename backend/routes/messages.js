@@ -10,13 +10,16 @@ router.post('/', async (req, res) => {
         res.status(201).json(message);
     }
     catch (error) {
-        res.status(400).json({error: "could not make message"});
+        res.status(400).json({ error: error.message });
     }
 });
 
-router.get('/:idGroupChatId', async (req, res) => {
+router.get('/:GroupChatId', async (req, res) => {
     try {
-        const messages = await Message.find({group: req.params.groupId}).sort({createdAt: 1}).populate('sender', 'username _id').lean();
+        const messages = await Message.find({group: req.params.GroupChatId})
+        .sort({createdAt: 1})
+        .populate('sender', 'username _id')
+        .lean();
         res.json(messages);
     }
     catch (error) {

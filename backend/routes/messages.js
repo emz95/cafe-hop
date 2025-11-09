@@ -14,9 +14,9 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/:idGroupChatId', async () => {
+router.get('/:idGroupChatId', async (req, res) => {
     try {
-        const messages = await Message.findbyId({group: req.params.groupId}).sort({createdAt: 1}).populate('sender', 'username').lean();
+        const messages = await Message.find({group: req.params.groupId}).sort({createdAt: 1}).populate('sender', 'username _id').lean();
         res.json(messages);
     }
     catch (error) {

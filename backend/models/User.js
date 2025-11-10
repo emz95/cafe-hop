@@ -28,6 +28,9 @@ const userSchema = new Schema ({
         type: String,
         required: true
     },
+    bio: String,
+    socials: String,
+    profilePictureUrl: String
 },
 {
     timestamps: true

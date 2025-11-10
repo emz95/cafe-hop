@@ -9,19 +9,21 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Please include all required fields');
     }
-
+    //check for user
     const userExists = await User.findOne({email})
     if(userExists) {
         res.status(400)
         throw new Error('User already exists')
     }
-
-    // check username for dupes?
-
+    //check for username
+    const usernameExists = await User.findOne({username})
+    if(usernameExists) {
+        res.status(400)
+        throw new Error('Username is taken')
+    }
     // hash password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
-
     // create user
     const user = await User.create({
         username,
@@ -31,7 +33,6 @@ const registerUser = asyncHandler(async (req, res) => {
         password: hashedPassword,
         number
     })
-
     if(user) {
         res.status(201).json({
             _id: user.id,
@@ -63,11 +64,40 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const userInfo = asyncHandler(async (req, res) => {
-    const {_id } = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id).select('-password')
 
-    res.status(200).json({
-        id:_id
-    })
+    if(!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+    res.status(200).json(user)
+})
+
+const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findByIdAndUpdate(req.user.id, req.body, {
+        new: true,
+        runValidators: true
+    }).select('-password')
+
+    if(!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+    res.json(user)
+})
+
+const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findByIdAndDelete(req.user.id)
+
+    if(!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+    res.status(204).send()
+
 })
 
 const generateToken = (id) => {
@@ -78,4 +108,6 @@ module.exports = {
     registerUser,
     loginUser,
     userInfo,
+    updateUser,
+    deleteUser
 }

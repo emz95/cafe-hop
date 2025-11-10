@@ -30,7 +30,11 @@ const userSchema = new Schema ({
     },
 },
 {
-    timestamps: true
+    timestamps: true,
+    bio: String,
+    socials: String,
+    profilePictureUrl: String
+
 })
 
 module.exports = model('User', userSchema);

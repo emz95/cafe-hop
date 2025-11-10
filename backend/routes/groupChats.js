@@ -68,7 +68,7 @@ router.post('/:id/leave', async (req, res) => {
 //get single chat by id
 router.get('/:id', async (req, res) => {
     try {
-        const chat = await groupChat.findById(req.params.id).populate('members', 'name email _id').lean();
+        const chat = await groupChat.findById(req.params.id).populate('members', 'username email _id').lean();
         if(!chat) {
             return res.status(404).json({error: 'Chat not found'});
         }

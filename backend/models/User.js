@@ -13,9 +13,9 @@ const userSchema = new Schema ({
         match: /@ucla\.edu$/i
 
     },
-    number: {
-        type: String
-    },
+    bio: String,
+    socials: String,
+    profilePictureUrl: String
 
 })
 

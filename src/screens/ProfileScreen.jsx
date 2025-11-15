@@ -19,7 +19,10 @@ const ProfileScreen = () => {
   return (
     <div className="profile-screen">
       <Header />
-      <div className="profile-content">
+      <div className="main-content">
+        <div className="main-header">
+          <h2>Profile</h2>
+        </div>
         <div className="profile-header">
           <div className="profile-picture profile-picture-large">
             <div className="profile-placeholder">

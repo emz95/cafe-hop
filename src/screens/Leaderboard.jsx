@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Header from './Header';
+import Header from '../components/Header';
 
-// Mock leaderboard data (replace with API call when backend is ready)
+// Mock leaderboard data
 const MOCK_LEADERBOARD = [
   { id: 1, username: 'judyhopps', tripCount: 47, rank: 1, avatar: 'J' },
   { id: 2, username: 'nickwilde', tripCount: 42, rank: 2, avatar: 'N' },
@@ -15,7 +15,7 @@ const MOCK_LEADERBOARD = [
   { id: 10, username: 'finnick', tripCount: 17, rank: 10, avatar: 'F' }
 ];
 
-const LeaderboardScreen = () => {
+const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,17 +45,20 @@ const LeaderboardScreen = () => {
     <div className="leaderboard-screen">
       <Header />
       <div className="main-content">
-        <div className="main-header">
-          <h2>🏆 Leaderboard</h2>
-          <p className="subtitle">Top cafe explorers ranked by trip count</p>
+        <div className="leaderboard-header-section">
+          <h2 className="leaderboard-main-title">🏆 Leaderboard</h2>
+          <p className="leaderboard-description">
+            See who's exploring the most cafes! Users are ranked by the total number of cafe trips they've completed. 
+            Keep hopping to climb the ranks and become the ultimate cafe explorer!
+          </p>
         </div>
 
         {loading && <p className="loading-text">Loading leaderboard...</p>}
 
         {!loading && leaderboard.length > 0 && (
           <div className="leaderboard-container">
-            {leaderboard.map((user) => (
-              <div key={user.id} className={`leaderboard-item ${getRankClass(user.rank)}`}>
+            {leaderboard.map((user, index) => (
+              <div key={user.id} className={`leaderboard-item ${getRankClass(user.rank)} ${index % 2 === 0 ? 'even-row' : 'odd-row'}`}>
                 <div className="leaderboard-rank">
                   <span className="rank-badge">{getRankBadge(user.rank)}</span>
                 </div>
@@ -82,4 +85,4 @@ const LeaderboardScreen = () => {
   );
 };
 
-export default LeaderboardScreen;
+export default Leaderboard;

@@ -14,8 +14,10 @@ const CafeTripPostScreen = () => {
   return (
     <div className="post-screen">
       <Header />
-      <div className="post-content">
-        <h2>Create Cafe Trip</h2>
+      <div className="main-content">
+        <div className="main-header">
+          <h2>Create Cafe Trip</h2>
+        </div>
         <form onSubmit={handleSubmit} className="post-form">
           <div className="input-field">
             <label className="input-label">Cafe Name</label>

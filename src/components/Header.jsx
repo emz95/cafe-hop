@@ -9,6 +9,8 @@ const Header = () => {
     { id: 'friends', label: 'Friends', path: '/friends' },
     { id: 'chats', label: 'Chats', path: '/chats' },
     { id: 'requests', label: 'Requests', path: '/requests' },
+    { id: 'reviews', label: 'Reviews', path: '/reviews' },
+    { id: 'leaderboard', label: 'Leaderboard', path: '/leaderboard' },
     { id: 'profile', label: 'Profile', path: '/profile' }
   ];
 

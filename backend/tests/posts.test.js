@@ -3,7 +3,8 @@ const app = require('../app');
 
 jest.mock("../models/Post", () => ({
     create: jest.fn(),
-    find: jest.fn()
+    find: jest.fn(),
+    findById: jest.fn()
 }));
 
 const Post = require('../models/Post');
@@ -84,3 +85,38 @@ describe("GET /api/posts", () => {
 
 
 })
+
+describe("GET /api/posts/:id", () => {
+    test("Should fetch a particular post based on its id", async () => {
+        const fakeId = "abc123";
+        const fakePost =
+            {
+                _id: fakeId,
+                author: {id: "si123", username: "John", firstName: "Joe", lastName: "Biden", password: "dowhatitakes"}, 
+                title: "Hello World",
+                description: "Have fun",
+                date: "2024-11-20T00:00:00.000Z",
+                location: "Starbucks",
+                isOpenToJoin: true
+
+            }
+        const leanMock = jest.fn().mockReturnValue(fakePost);
+        const populateMock = jest.fn().mockReturnValue({lean: leanMock});
+        Post.findById.mockReturnValue({populate: populateMock});
+        const response = await request(app).get(`/api/posts/${fakeId}`);
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(fakePost);
+
+    });
+    test("Should return 404 due to not being able to find post with given id", async () => {
+        const fakeId = 'NA';
+        const leanMock = jest.fn().mockReturnValue(null);
+        const populateMock = jest.fn().mockReturnValue({lean: leanMock});
+        Post.findById.mockReturnValue({populate: populateMock});
+        const response = await request(app).get(`/api/posts/${fakeId}`);
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({error: "post not found"});
+
+
+    });
+});

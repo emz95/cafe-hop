@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 const MainScreen = () => {
   const navigate = useNavigate();
-
-  const posts = [
+  const [posts, setPosts] = useState([
     {
       id: 1,
       cafeName: 'Stagger Cafe',
@@ -14,9 +13,41 @@ const MainScreen = () => {
       time: '2:00 PM',
       posterUsername: 'judyhopps',
       description: 'Looking for study buddies!',
-      joinByRequest: false
+      joinByRequest: false,
+      joined: false
+    },
+    {
+      id: 2,
+      cafeName: 'Blue Bottle Coffee',
+      location: 'Arts District',
+      date: '2025-11-18',
+      time: '10:00 AM',
+      posterUsername: 'nickwilde',
+      description: 'Morning coffee meetup!',
+      joinByRequest: true,
+      joined: false
     }
-  ];
+  ]);
+
+  const handleJoin = (postId, joinByRequest) => {
+    if (joinByRequest) {
+      alert('Request sent! Waiting for approval.');
+      setPosts(posts.map(post => 
+        post.id === postId ? { ...post, joined: true, requested: true } : post
+      ));
+    } else {
+      alert('Successfully joined the trip!');
+      setPosts(posts.map(post => 
+        post.id === postId ? { ...post, joined: true, requested: false } : post
+      ));
+    }
+  };
+
+  const getButtonText = (post) => {
+    if (post.joined && post.requested) return 'Requested';
+    if (post.joined) return 'Joined';
+    return post.joinByRequest ? 'Request to Join' : 'Join';
+  };
 
   return (
     <div className="main-screen">
@@ -53,7 +84,13 @@ const MainScreen = () => {
                 <p className="description">{post.description}</p>
               </div>
               <div className="post-actions">
-                <button className="">Join</button>
+                <button 
+                  className={post.joined ? "btn-secondary btn-medium" : "btn-primary btn-medium"}
+                  onClick={() => handleJoin(post.id, post.joinByRequest)}
+                  disabled={post.joined}
+                >
+                  {getButtonText(post)}
+                </button>
               </div>
             </div>
           ))}

@@ -1,7 +1,8 @@
 const asyncHandler = require('express-async-handler')
 const Post = require('../models/Post')
-
-
+const Post = require('../models/Post');
+const JoinRequest = require('../models/JoinRequest');
+const User = require('../models/User');
 
 const getPosts = asyncHandler(async (req, res) => {
     const {
@@ -125,11 +126,50 @@ const getUserPosts = asyncHandler( async (req, res)=> {
     return res.status(200).json(posts)
 })
 
+const getLeaderboard = asyncHandler( async (req, res) => {
+    const counts = new Map()
+
+    const addCount = (userId) => {
+        const key = userId.toString()
+        counts.set(key, (counts.get(key) || 0) + 1)
+    }
+
+    const posts = await Post.find({}, 'author').lean()
+    posts.forEach(post => {
+        addCount(post.author)
+    })
+
+    const joins = await JoinRequest.find({status: 'accepted'}, 'user').lean()
+    joins.forEach(join => {
+        addCount(join.user)
+    })
+
+    const userIds = Object.keys(counts)
+    if (userIds.length === 0) {
+        return res.status(200).json([])
+    }
+
+    const users = await User.find({_id: {$in: userIds}}, 'username').lean()
+
+    const leaderboard = userIds.map(id => {
+        const user = users.find(u => u._id.toString() === id)
+        return {
+            _id: id,
+            username: user.username,
+            trips: counts[id]
+        }
+    }).sort((a, b) => b.trips - a.trips)
+
+    return res.status(200).json(leaderboard)
+
+
+})
 
 module.exports = {
     getPosts,
     createPost,
     deletePost,
     editPost,
-    getUserPosts
+    getUserPosts,
+    getLeaderboard
 }

@@ -7,7 +7,6 @@ const cafeSchema = new Schema({
         unique: true 
     },
 
-    imageUrl: String,
 
     avgRating: {
         type: Number, 

@@ -1,12 +1,52 @@
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const Post = require('../models/Post')
 
 
 
 const getPosts = asyncHandler(async (req, res) => {
-    const posts = await Post.find().populate('author', 'username')
+    const {
+        search,
+        dateGoing,
+        datePosted,
+        isOpenToJoin
+    } = req.query
+
+    const filter = {}
+
+    if (search) {
+        const regex = new RegExp(search, 'i')
+        filter.$or = [
+            {title: regex},
+            {description: regex},
+            {location: regex},
+            {author: regex}
+        ]
+    }
+    if (dateGoing) {
+        const day = new Date(dateGoing)
+        if(!isNaN(day)) {
+            const nextDay = newDate(day)
+            nextDay.setDate(nextDay.getDate() + 1)
+            filter.date = {$gte: day, $lt: nextDay}
+        }
+    }
+    if (datePosted) {
+        const day = new Date(datePosted)
+        if(!isNaN(day)) {
+            const nextDay = newDate(day)
+            nextDay.setDate(nextDay.getDate() + 1)
+            filter.createdAt = {$gte: day, $lt: nextDay}
+        }
+    }
+
+    if (isOpenToJoin !== undefined) {
+        filter.isOpenToJoin = isOpenToJoin === 'true'
+    }
+
+    const posts = await Post.find(filter)
+        .sort({createdAt: -1})
+        .populate('author', 'username')
+
     if (posts.length === 0) {
         return res.status(200).json({ message: 'No posts yet' })
     }
@@ -73,10 +113,23 @@ const editPost = asyncHandler( async (req, res) => {
 
 })
 
+const getUserPosts = asyncHandler( async (req, res)=> {
+    const userId = req.params.id
+    const posts = await Post.find({author: userId})
+        .sort({createdAt: -1})
+        .populate('author', 'username')
+
+    if (posts.length === 0) {
+        return res.status(200).json({ message: 'No posts yet' })
+    }
+    return res.status(200).json(posts)
+})
+
 
 module.exports = {
     getPosts,
     createPost,
     deletePost,
-    editPost
+    editPost,
+    getUserPosts
 }

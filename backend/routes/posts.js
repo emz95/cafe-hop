@@ -5,13 +5,15 @@ const {
     getPosts,
     createPost,
     deletePost,
-    editPost
+    editPost,
+    getUserPosts
 } = require('../controllers/userController')
 
 router.get('/', getPosts)
 router.post('/', protect, createPost)
 router.patch('/:id', protect, editPost)
 router.delete('/:id', protect, deletePost)
+router.get('/user/:id', getUserPosts )
 
 
 module.exports = router; 

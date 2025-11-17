@@ -7,7 +7,7 @@ const cafeReviewSchema = new Schema({
         required: true
     },
     reviewer: {
-        Type: Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'User',
         required: true
     },

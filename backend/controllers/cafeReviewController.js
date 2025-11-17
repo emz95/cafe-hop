@@ -26,7 +26,7 @@ const getReviewsByCafe = asyncHandler(async (req, res) => {
 const deleteReview = asyncHandler(async (req, res) => {
     const review = await cafeReview.findByIdAndDelete(req.params.id);
     if(!review) {
-        res.json({error: "could not delete review"});
+        return res.json({error: "could not delete review"});
     }
     return res.json({message: "review deleted"});
     

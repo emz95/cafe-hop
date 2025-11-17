@@ -28,13 +28,12 @@ const userSchema = new Schema ({
         type: String,
         required: true
     },
-},
-{
-    timestamps: true,
     bio: String,
     socials: String,
     profilePictureUrl: String
-
+},
+{
+    timestamps: true
 })
 
 module.exports = model('User', userSchema);

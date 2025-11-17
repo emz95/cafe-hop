@@ -19,6 +19,8 @@ app.use('/api/users', usersRouter);
 app.use('/api/joinRequests', joinRequestsRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/chats', chatRouter);
+app.use('/api/users', usersRouter);
+
 
 
 app.get('/testing', (req, res) => {

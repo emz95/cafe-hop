@@ -9,9 +9,31 @@ const LoginScreen = () => {
     password: ''
   });
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState(null)
+
+  async function handleSubmit(e){
     e.preventDefault();
-    // Add auth logic!
+    setError(null)
+    try {
+      const res = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem("token", data.token )
+        navigate('/main');
+      } else {
+        const err = await res.json()
+        setError(err.message)
+        return
+      }
+    } catch (err) {
+      setError(err.message)
+    }
     navigate('/main');
   };
 
@@ -37,6 +59,7 @@ const LoginScreen = () => {
             onChange={(e) => setFormData({...formData, password: e.target.value})}
             required
           />
+          {error && <p className="error">{error}</p>}
 
           <button type="submit" className="btn btn-primary btn-large btn-full-width">
             Login

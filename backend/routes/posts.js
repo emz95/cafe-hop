@@ -1,4 +1,5 @@
 const express = require('express');
+const {protect} = require('../middleware/authMiddleware')
 
 const router = express.Router();
 const {    
@@ -8,8 +9,7 @@ const {
     editPost,
     getUserPosts,
     getLeaderboard
-} = require('../controllers/userController');
-const { getLeaderboard } = require('../controllers/postController');
+} = require('../controllers/postController');
 
 router.get('/', getPosts)
 router.post('/', protect, createPost)

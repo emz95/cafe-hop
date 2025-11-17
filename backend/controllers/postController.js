@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler')
 const Post = require('../models/Post')
-const Post = require('../models/Post');
 const JoinRequest = require('../models/JoinRequest');
 const User = require('../models/User');
 

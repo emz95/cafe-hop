@@ -53,7 +53,7 @@ const cafes = [
   
 async function run() {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGODB_URI);
         await Cafe.deleteMany({}); 
         await Cafe.insertMany(cafes); 
         console.log('cafes seeded'); 

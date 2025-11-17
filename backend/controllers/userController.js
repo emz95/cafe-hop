@@ -4,23 +4,37 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/User')
 
 const registerUser = asyncHandler(async (req, res) => {
+    //check for required fields
     const {username, firstName, lastName, email, password, number } = req.body
     if (!username || !firstName || !lastName || !email || !password) {
-        res.status(400);
-        throw new Error('Please include all required fields');
+        res.status(400).json({
+            message: 'Please include all required fields',
+        })
     }
-    //check for user
-    const userExists = await User.findOne({email})
-    if(userExists) {
-        res.status(400)
-        throw new Error('User already exists')
-    }
+
     //check for username
     const usernameExists = await User.findOne({username})
     if(usernameExists) {
-        res.status(400)
-        throw new Error('Username is taken')
+        return res.status(400).json({
+            message: 'Username is taken', 
+        })
     }
+
+    //check for ucla email
+    if (!/@ucla\.edu$/i.test(email)) {
+        return res.status(400).json({
+          message: 'Email must be a @ucla.edu address',
+        })
+    }
+
+    //check for user
+    const userExists = await User.findOne({email})
+    if(userExists) {
+        return res.status(400).json({
+            message: 'Email already exists',
+        })
+    }
+    
     // hash password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
@@ -41,8 +55,9 @@ const registerUser = asyncHandler(async (req, res) => {
             token: generateToken(user._id)
         })
     } else {
-        res.status(400)
-        throw new Error('Invalid user data')
+        return res.status(400).json({
+            message: 'Invalid user data'
+        })
     }
 })
 

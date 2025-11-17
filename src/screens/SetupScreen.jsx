@@ -13,10 +13,32 @@ const SetupScreen = () => {
     number: ''
   });
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState(null)
+
+  async function handleSubmit (e){
     e.preventDefault();
-    navigate('/main');
-  };
+    setError(null)
+    try {
+      const res = await fetch("http://localhost:3000/api/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem("token", data.token )
+        navigate('/main');
+      } else {
+        const err = await res.json()
+        setError(err.message)
+        return
+      }
+    } catch (err) {
+      setError(err.message)
+    }
+  }
 
   return (
     <div className="setup-screen">
@@ -71,6 +93,8 @@ const SetupScreen = () => {
             value={formData.number}
             onChange={(e) => setFormData({...formData, number: e.target.value})}
           />
+          {error && <p className="error">{error}</p>}
+
 
           <button type="submit" className="btn btn-primary btn-large btn-full-width">
             Complete Setup

@@ -1,13 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require("cors")
+const cookieParser = require('cookie-parser')
 
 require('dotenv').config();
 const app = express();
-app.use(cors())
+app.use(cookieParser())
+app.use(cors({origin: "http://localhost:5173", credentials: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 
 const usersRouter = require('./routes/users');
@@ -27,7 +28,6 @@ app.use('/api/messages', messageRouter);
 app.use('/api/chats', chatRouter);
 app.use('/api/cafes', cafeRouter); 
 app.use('/api/cafeReviews', cafeReviews);
-
 
 
 app.get('/testing', (req, res) => {

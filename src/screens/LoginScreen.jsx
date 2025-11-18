@@ -1,18 +1,47 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../components/InputField';
+import {useAuth} from '../contexts/AuthContext'
 
 const LoginScreen = () => {
+  const {login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState(null)
+
+  async function handleSubmit(e){
+    console.log("handlesubmit")
     e.preventDefault();
-    // Add auth logic!
-    navigate('/main');
+    setError(null)
+    try {
+      const res = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(formData)
+      })
+      console.log("Login status:", res.status)
+      if (res.ok) {
+        const data = await res.json()
+        console.log("LOGIN SUCCESS:", data) 
+        login(data.token)
+        navigate('/main');
+      } else {
+        const err = await res.json()
+        console.error("LOGIN ERROR:", err)
+        setError(err.message)
+        return
+      }
+    } catch (err) {
+      console.error("LOGIN FETCH ERROR:", err)
+      setError(err.message)
+    }
   };
 
   return (
@@ -37,6 +66,7 @@ const LoginScreen = () => {
             onChange={(e) => setFormData({...formData, password: e.target.value})}
             required
           />
+          {error && <p className="error">{error}</p>}
 
           <button type="submit" className="btn btn-primary btn-large btn-full-width">
             Login

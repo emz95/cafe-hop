@@ -133,7 +133,7 @@ const sendAuthRes = (user, res, statusCode) => {
 }
 
 const refresh = asyncHandler(async (req, res) => {
-    const token = req.cookies && req.cookies.refreshToken
+    const token = req.cookies?.refreshToken
     if (!token) {
         res.status(401)
         throw new Error('No refresh token')

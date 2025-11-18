@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../components/InputField';
+import {useAuth} from '../contexts/AuthContext'
 
 const LoginScreen = () => {
+  const {login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -12,6 +14,7 @@ const LoginScreen = () => {
   const [error, setError] = useState(null)
 
   async function handleSubmit(e){
+    console.log("handlesubmit")
     e.preventDefault();
     setError(null)
     try {
@@ -20,21 +23,25 @@ const LoginScreen = () => {
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(formData)
       })
+      console.log("Login status:", res.status)
       if (res.ok) {
         const data = await res.json()
-        localStorage.setItem("token", data.token )
+        console.log("LOGIN SUCCESS:", data) 
+        login(data.token)
         navigate('/main');
       } else {
         const err = await res.json()
+        console.error("LOGIN ERROR:", err)
         setError(err.message)
         return
       }
     } catch (err) {
+      console.error("LOGIN FETCH ERROR:", err)
       setError(err.message)
     }
-    navigate('/main');
   };
 
   return (

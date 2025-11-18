@@ -118,9 +118,16 @@ const sendAuthRes = (user, res, statusCode) => {
 
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
         maxAge: 7*24*60*60*1000
+    })
+
+    return res.status(statusCode).json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        token: accessToken,
     })
 
 }

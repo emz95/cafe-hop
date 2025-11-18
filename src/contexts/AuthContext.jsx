@@ -13,7 +13,6 @@ export function AuthProvider({children}){
         setToken(null)
     }
 
-
     return (
        <AuthContext.Provider value={{token, login, logout}}>{children}</AuthContext.Provider>
     )

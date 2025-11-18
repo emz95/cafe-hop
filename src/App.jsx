@@ -12,6 +12,7 @@ import FriendScreen from './screens/FriendScreen';
 import CafeReviewScreen from './components/ProfilePicture';
 import CafeDetailScreen from './components/CafeTripPost';
 import Leaderboard from './screens/Leaderboard';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import './styles/main.css';
 
 function App() {
@@ -22,14 +23,18 @@ function App() {
         <Route path="/setup" element={<SetupScreen />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/login" element={<LoginScreen />} />
-        <Route path="/main" element={<MainScreen />} />
-        <Route path="/profile" element={<ProfileScreen />} />
-        <Route path="/post" element={<CafeTripPostScreen />} />
-        <Route path="/requests" element={<RequestScreen />} />
-        <Route path="/chats" element={<ChatScreen />} />
-        <Route path="/friends" element={<FriendScreen />} />
-        <Route path="/reviews" element={<CafeReviewScreen />} />
-        <Route path="/reviews/:cafeId" element={<CafeDetailScreen />} />
+        
+        <Route element ={<ProtectedRoute />} >
+          <Route path="/main" element={<MainScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/post" element={<CafeTripPostScreen />} />
+          <Route path="/requests" element={<RequestScreen />} />
+          <Route path="/chats" element={<ChatScreen />} />
+          <Route path="/friends" element={<FriendScreen />} />
+          <Route path="/reviews" element={<CafeReviewScreen />} />
+          <Route path="/reviews/:cafeId" element={<CafeDetailScreen />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

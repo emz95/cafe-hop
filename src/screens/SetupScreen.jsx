@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../components/InputField';
+import { useAuth } from "../contexts/AuthContext";
 
 const SetupScreen = () => {
+  const {login} = useAuth()
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
@@ -24,11 +26,12 @@ const SetupScreen = () => {
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify(formData)
       })
       if (res.ok) {
         const data = await res.json()
-        localStorage.setItem("token", data.token )
+        login(data.token)
         navigate('/main');
       } else {
         const err = await res.json()

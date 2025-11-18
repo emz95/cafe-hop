@@ -1,13 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require("cors")
+const cookieParser = require('cookie-parser')
 
 require('dotenv').config();
 const app = express();
+app.use(cookieParser())
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 
 const usersRouter = require('./routes/users');
@@ -23,7 +24,6 @@ app.use('/api/joinRequests', joinRequestsRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/chats', chatRouter);
 app.use('/api/users', usersRouter);
-
 
 
 app.get('/testing', (req, res) => {

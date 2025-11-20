@@ -7,6 +7,7 @@ const ProfileScreen = () => {
   const {token} = useAuth()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [pastEvents, setPastEvents] = useState(null)
   /*
   const user = {
     username: 'judyhopps',
@@ -43,14 +44,41 @@ const ProfileScreen = () => {
         setLoading(false)
       }
     }
-    loadUser()
-  }, [])
 
+    async function loadPosts() {
+      try {
+        const userId = user._id
+        const res = await fetch(`http://localhost:3000/api/posts/${userId}`, {
+          method: "GET",
+        })
 
+        if(!postRes.ok) {
+          throw new Error("Error fetching posts")
+        }
+        const data = await res.json()
+        setPastEvents(data)
+
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    async function init() {
+      loadUser()
+      if (user) {
+        loadPosts()
+      }
+      setLoading(false)
+    } 
+    init()
+  }, [user])
+
+  /*
   const pastEvents = [
     { id: 1, cafeName: 'Stagger Cafe', date: '2025-10-15', location: 'Ktown' },
     { id: 2, cafeName: 'Blue Bottle', date: '2025-10-20', location: 'SF' }
   ];
+  */
 
   if (loading) return <p>Loading user</p>
   if (!user) return <p>Could not load user</p>
@@ -79,7 +107,8 @@ const ProfileScreen = () => {
 
         <div className="past-events-section">
           <h3>Past Events</h3>
-          <div className="posts-grid">
+          {pastEvents && pastEvents.length > 0 ? (
+            <div className="posts-grid">
             {pastEvents.map(event => (
               <div key={event.id} className="cafe-trip-post">
                 <h3 className="cafe-name">{event.cafeName}</h3>
@@ -87,7 +116,10 @@ const ProfileScreen = () => {
                 <p>📅 {event.date}</p>
               </div>
             ))}
-          </div>
+            </div> 
+          ):(
+            <p>No past posts.</p>
+          )}
         </div>
       </div>
     </div>

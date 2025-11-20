@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import {useAuth} from '../contexts/AuthContext'
+
 
 const ProfileScreen = () => {
+  const {token} = useAuth()
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+  /*
   const user = {
     username: 'judyhopps',
     email: 'judy.hopps@example.com',
@@ -10,11 +16,44 @@ const ProfileScreen = () => {
     number: '(555) 123-4567',
     bio: 'Coffee enthusiast!'
   };
+  */
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await fetch("http://localhost:3000/api/users/me", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        })
+
+        if(!res.ok) {
+          console.error(res.err)
+          return
+        }
+        const data = await res.json()
+        setUser(data)
+        console.log(data)
+
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadUser()
+  }, [])
+
 
   const pastEvents = [
     { id: 1, cafeName: 'Stagger Cafe', date: '2025-10-15', location: 'Ktown' },
     { id: 2, cafeName: 'Blue Bottle', date: '2025-10-20', location: 'SF' }
   ];
+
+  if (loading) return <p>Loading user</p>
+  if (!user) return <p>Could not load user</p>
 
   return (
     <div className="profile-screen">

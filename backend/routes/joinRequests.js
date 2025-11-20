@@ -11,6 +11,7 @@ const {
     getJoinRequestsForPoster
 } = require('../controllers/joinRequestController');
 
+
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/', protect, makeJoinRequest);
@@ -23,7 +24,7 @@ router.get('/getByPost/:postId', protect, getJoinRequestsForPost);
 
 router.get('/getByPoster/:posterId', protect, getJoinRequestsForPoster);
 
-
+module.exports = router
 //create a join request 
 // router.post('/', async (req, res) => {
 //     try {

@@ -10,7 +10,8 @@ async function start() {
             console.log('API on http://localhost:3000')
         });
     } catch (err) {
-        console.error("Mongo connect error:", err.message);
+        console.error("Mongo connect error:", err);
+
         process.exit(1);
     }
 }

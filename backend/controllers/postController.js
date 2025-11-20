@@ -60,11 +60,10 @@ const createPost = asyncHandler(async (req, res) => {
     }
     const post = await Post.create({
         author: req.user.id,
-        title: req.body.title,
+        cafeName: req.body.cafeName,
         description: req.body.description,
         date: req.body.date,
         location: req.body.location,
-        isOpenToJoin: req.body.isOpenToJoin
     })
     if (!post) {
         res.status(400)

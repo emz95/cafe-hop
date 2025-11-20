@@ -7,7 +7,6 @@ const cafeSchema = new Schema({
         unique: true 
     },
 
-
     avgRating: {
         type: Number, 
         default: 0

@@ -8,7 +8,7 @@ const postSchema = new Schema({
         ref: "User",
     },
 
-    title: {
+    cafeName: {
         type: String, 
         required: true
     },
@@ -23,6 +23,7 @@ const postSchema = new Schema({
         type: Date, 
         required: true, 
     },
+
     location: {
         type: String, 
         required: true

@@ -18,7 +18,7 @@ const ProfileScreen = () => {
     bio: 'Coffee enthusiast!'
   };
   */
-
+  
   useEffect(() => {
     async function loadUser() {
       try {

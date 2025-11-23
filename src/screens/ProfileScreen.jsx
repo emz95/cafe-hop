@@ -47,12 +47,15 @@ const ProfileScreen = () => {
 
     async function loadPosts() {
       try {
-        const userId = user._id
-        const res = await fetch(`http://localhost:3000/api/posts/${userId}`, {
+        const res = await fetch(`http://localhost:3000/api/users/me/posts`, {
           method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         })
 
-        if(!postRes.ok) {
+        if(!res.ok) {
           throw new Error("Error fetching posts")
         }
         const data = await res.json()

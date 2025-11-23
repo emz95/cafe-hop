@@ -1,9 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 const MainScreen = () => {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const res = await fetch(`http://localhost:3000/api/posts`, {
+          method: "GET",
+        })
+
+        if(!res.ok) {
+          throw new Error("Error fetching posts")
+        }
+        const data = await res.json()
+        setPosts(data)
+        console.log(data)
+
+
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadPosts()
+
+  }, [])
+  if (loading) return <p>Loading posts</p>
+
+  /*
   const [posts, setPosts] = useState([
     // {
     //   id: 1,
@@ -28,6 +58,8 @@ const MainScreen = () => {
       joined: false
     }
   ]);
+  */
+
 
   const handleJoin = (postId, joinByRequest) => {
     if (joinByRequest) {
@@ -68,10 +100,10 @@ const MainScreen = () => {
             <div key={post.id} className="cafe-trip-post">
               <div className="post-header">
                 <div className="profile-picture profile-picture-small">
-                  <div className="profile-placeholder">{post.posterUsername.charAt(0)}</div>
+                  <div className="profile-placeholder">{post.author.username.charAt(0)}</div>
                 </div>
                 <div className="post-user-info">
-                  <h4>{post.posterUsername}</h4>
+                  <h4>{post.author.username}</h4>
                 </div>
               </div>
               <div className="post-content">

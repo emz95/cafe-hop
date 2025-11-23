@@ -4,11 +4,11 @@ const JoinRequest = require('../models/JoinRequest');
 const User = require('../models/User');
 
 const getPosts = asyncHandler(async (req, res) => {
+    console.log("REACHED HEREEEE")
     const {
         search,
         dateGoing,
         datePosted,
-        isOpenToJoin
     } = req.query
 
     const filter = {}
@@ -16,16 +16,15 @@ const getPosts = asyncHandler(async (req, res) => {
     if (search) {
         const regex = new RegExp(search, 'i')
         filter.$or = [
-            {title: regex},
+            {cafeName: regex},
             {description: regex},
             {location: regex},
-            {author: regex}
         ]
     }
     if (dateGoing) {
         const day = new Date(dateGoing)
         if(!isNaN(day)) {
-            const nextDay = newDate(day)
+            const nextDay = new Date(day)
             nextDay.setDate(nextDay.getDate() + 1)
             filter.date = {$gte: day, $lt: nextDay}
         }
@@ -33,23 +32,19 @@ const getPosts = asyncHandler(async (req, res) => {
     if (datePosted) {
         const day = new Date(datePosted)
         if(!isNaN(day)) {
-            const nextDay = newDate(day)
+            const nextDay = new Date(day)
             nextDay.setDate(nextDay.getDate() + 1)
             filter.createdAt = {$gte: day, $lt: nextDay}
         }
     }
 
-    if (isOpenToJoin !== undefined) {
-        filter.isOpenToJoin = isOpenToJoin === 'true'
-    }
+    console.log("Filter: ", filter )
 
     const posts = await Post.find(filter)
         .sort({createdAt: -1})
         .populate('author', 'username')
+    console.log("posts")
 
-    if (posts.length === 0) {
-        return res.status(200).json({ message: 'No posts yet' })
-    }
     res.status(200).json(posts)
 })
 

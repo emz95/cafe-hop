@@ -8,8 +8,10 @@ const {
     approveJoinRequest,
     rejectJoinRequest,
     getJoinRequestsForPost,
-    getJoinRequestsForPoster
+    getJoinRequestsForPoster,
+    getJoinRequestsForRequester
 } = require('../controllers/joinRequestController');
+
 
 const { protect } = require('../middleware/authMiddleware');
 
@@ -23,9 +25,8 @@ router.get('/getByPost/:postId', protect, getJoinRequestsForPost);
 
 router.get('/getByPoster/:posterId', protect, getJoinRequestsForPoster);
 
-module.exports = router;
-
-
+router.get('/getByRequester/:requesterId', protect, getJoinRequestsForRequester);
+module.exports = router
 //create a join request 
 // router.post('/', async (req, res) => {
 //     try {

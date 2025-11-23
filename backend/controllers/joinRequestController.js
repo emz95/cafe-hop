@@ -92,6 +92,18 @@ const getJoinRequestsForPoster = asyncHandler(async (req, res) => {
 
 });
 
+const getJoinRequestsForRequester = asyncHandler(async (req, res) => {
+    const requests = await JoinRequest.find({
+            requester: req.params.requesterId,
+            status: 'Pending'
+        })
+        .populate('poster', 'username email _id')
+        .populate('post', 'title _id')
+        .sort({createdAt: -1})
+        .lean();
+    res.json(requests);
+
+});
 
 
 
@@ -100,7 +112,8 @@ module.exports = {
     approveJoinRequest,
     rejectJoinRequest,
     getJoinRequestsForPost,
-    getJoinRequestsForPoster
+    getJoinRequestsForPoster,
+    getJoinRequestsForRequester
 }; 
 
 

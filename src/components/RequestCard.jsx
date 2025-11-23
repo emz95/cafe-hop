@@ -1,21 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export const RequestCard = ({ requests: initialRequests = [] }) => {
-  const [requests, setRequests] = useState(initialRequests);
+export const RequestCard = ({
+  requests = [],
+  onApprove,
+  onReject,
+}) => {
 
-  const handleAccept = (requestId) => {
-    console.log('Accepted request:', requestId);
-    // Update request status
-    setRequests(requests.filter(req => req.id !== requestId));
-  };
-
-  const handleDecline = (requestId) => {
-    console.log('Declined request:', requestId);
-    // Update request status
-    setRequests(requests.filter(req => req.id !== requestId));
-  };
-
-  if (requests.length === 0) {
+  if (!requests || requests.length === 0) {
     return <p className="empty-message">No active requests</p>;
   }
 
@@ -25,7 +16,9 @@ export const RequestCard = ({ requests: initialRequests = [] }) => {
         <div key={req.id} className="request-card">
           <div className="request-header">
             <div className="profile-picture profile-picture-small">
-              <div className="profile-placeholder">{req.username.charAt(0).toUpperCase()}</div>
+              <div className="profile-placeholder">
+                {req.username.charAt(0).toUpperCase()}
+              </div>
             </div>
             <div className="request-info">
               <h4>{req.username}</h4>
@@ -36,15 +29,15 @@ export const RequestCard = ({ requests: initialRequests = [] }) => {
             </div>
           </div>
           <div className="request-actions">
-            <button 
+            <button
               className="btn-accept btn-small"
-              onClick={() => handleAccept(req.id)}
+              onClick={() => onApprove && onApprove(req.id)}
             >
               Accept
             </button>
-            <button 
+            <button
               className="btn-decline btn-small"
-              onClick={() => handleDecline(req.id)}
+              onClick={() => onReject && onReject(req.id)}
             >
               Decline
             </button>

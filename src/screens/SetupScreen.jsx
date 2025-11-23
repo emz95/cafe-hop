@@ -21,7 +21,7 @@ const SetupScreen = () => {
     e.preventDefault();
     setError(null)
     try {
-      const res = await fetch("http://localhost:3000/api/users/", {
+      const res = await fetch("http://localhost:3000/api/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -30,13 +30,15 @@ const SetupScreen = () => {
         body: JSON.stringify(formData)
       })
       if (res.ok) {
-        const data = await res.json()
-        login(data.token)
+        const data = await res.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        login(data.token);
         navigate('/main');
       } else {
-        const err = await res.json()
-        setError(err.message)
-        return
+        const err = await res.json();
+        setError(err.message);
+        return;
       }
     } catch (err) {
       setError(err.message)

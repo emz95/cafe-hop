@@ -25,7 +25,7 @@ router.get('/getByPost/:postId', protect, getJoinRequestsForPost);
 
 router.get('/getByPoster/:posterId', protect, getJoinRequestsForPoster);
 
-router.get('/getByRequester/:requesterId', protect, getJoinRequestsForPoster);
+router.get('/getByRequester/:requesterId', protect, getJoinRequestsForRequester);
 module.exports = router
 //create a join request 
 // router.post('/', async (req, res) => {

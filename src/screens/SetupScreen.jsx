@@ -30,13 +30,15 @@ const SetupScreen = () => {
         body: JSON.stringify(formData)
       })
       if (res.ok) {
-        const data = await res.json()
-        login(data.token)
+        const data = await res.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        login(data.token);
         navigate('/main');
       } else {
-        const err = await res.json()
-        setError(err.message)
-        return
+        const err = await res.json();
+        setError(err.message);
+        return;
       }
     } catch (err) {
       setError(err.message)

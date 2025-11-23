@@ -5,17 +5,17 @@ import Header from '../components/Header';
 const MainScreen = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([
-    {
-      id: 1,
-      cafeName: 'Stagger Cafe',
-      location: 'Ktown',
-      date: '2025-11-05',
-      time: '2:00 PM',
-      posterUsername: 'judyhopps',
-      description: 'Looking for study buddies!',
-      joinByRequest: false,
-      joined: false
-    },
+    // {
+    //   id: 1,
+    //   cafeName: 'Stagger Cafe',
+    //   location: 'Ktown',
+    //   date: '2025-11-05',
+    //   time: '2:00 PM',
+    //   posterUsername: 'judyhopps',
+    //   description: 'Looking for study buddies!',
+    //   joinByRequest: false,
+    //   joined: false
+    // },
     {
       id: 2,
       cafeName: 'Blue Bottle Coffee',

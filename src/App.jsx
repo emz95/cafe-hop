@@ -9,9 +9,9 @@ import CafeTripPostScreen from './screens/CafeTripPostScreen';
 import RequestScreen from './screens/RequestScreen';
 import ChatScreen from './screens/ChatScreen';
 import FriendScreen from './screens/FriendScreen';
-import CafeReviewScreen from './components/ProfilePicture';
-import CafeDetailScreen from './components/CafeTripPost';
 import Leaderboard from './screens/Leaderboard';
+import CafeReviewScreen from './screens/CafeReviewScreen';
+import CafeDetailScreen from './components/CafeTripPost';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import './styles/main.css';
 

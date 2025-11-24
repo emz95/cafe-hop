@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import ReviewCard from './Button';
+import { MOCK_CAFES as MOCK_CAFES_ARRAY } from '../screens/CafeReviewScreen';
 
-// Mock data for cafes (replace with API call when backend is ready)
-const MOCK_CAFES = {
-  '1': { _id: '1', name: 'Stagger Cafe', location: 'Ktown', averageRating: 4.5, reviewCount: 12 },
-  '2': { _id: '2', name: 'Blue Bottle Coffee', location: 'Arts District', averageRating: 4.8, reviewCount: 24 },
-  '3': { _id: '3', name: 'Verve Coffee', location: 'West Hollywood', averageRating: 4.3, reviewCount: 18 },
-  '4': { _id: '4', name: 'Alfred Coffee', location: 'Melrose', averageRating: 4.6, reviewCount: 31 },
-  '5': { _id: '5', name: 'Go Get Em Tiger', location: 'Los Feliz', averageRating: 4.7, reviewCount: 22 },
-  '6': { _id: '6', name: 'Intelligentsia', location: 'Silver Lake', averageRating: 4.4, reviewCount: 15 }
-};
+// Convert array to object for quick lookup by ID
+const MOCK_CAFES = MOCK_CAFES_ARRAY.reduce((acc, cafe) => {
+  acc[cafe._id] = cafe;
+  return acc;
+}, {});
 
 // Mock reviews data (replace with API call when backend is ready)
 const MOCK_REVIEWS = [
@@ -164,7 +161,7 @@ const CafeDetailScreen = () => {
           <div className="reviews-header">
             <h2 className="reviews-title">Reviews</h2>
             <button 
-              className="btn-primary btn-medium"
+              className="btn btn-primary btn-medium"
               onClick={() => setShowReviewForm(!showReviewForm)}
             >
               {showReviewForm ? 'Cancel' : 'Write a Review'}
@@ -235,7 +232,7 @@ const CafeDetailScreen = () => {
                 </div>
               </div>
 
-              <button type="submit" className="btn-primary btn-medium btn-full-width">
+              <button type="submit" className="btn btn-primary btn-medium btn-full-width">
                 Submit Review
               </button>
             </form>

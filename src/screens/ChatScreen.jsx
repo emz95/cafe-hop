@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import ProfilePicture from '../components/ProfilePicture';
 
 // Mock chat data
 const MOCK_CHATS = [
@@ -101,9 +102,7 @@ const ChatScreen = () => {
                     className="chat-preview"
                     onClick={() => handleChatClick(chat)}
                   >
-                    <div className="profile-picture profile-picture-small">
-                      <div className="profile-placeholder">{chat.avatar}</div>
-                    </div>
+                    <ProfilePicture username={chat.username} size="small" />
                     <div className="chat-info">
                       <div className="chat-header">
                         <h4>{chat.username}</h4>
@@ -127,9 +126,7 @@ const ChatScreen = () => {
                 ← Back to Chats
               </button>
               <div className="chat-detail-user">
-                <div className="profile-picture profile-picture-small">
-                  <div className="profile-placeholder">{selectedChat.avatar}</div>
-                </div>
+                <ProfilePicture username={selectedChat.username} size="small" />
                 <h3>{selectedChat.username}</h3>
               </div>
             </div>
@@ -138,9 +135,17 @@ const ChatScreen = () => {
               <div className="chat-messages">
                 {messages.map(msg => (
                   <div key={msg.id} className={`message ${msg.isMe ? 'message-sent' : 'message-received'}`}>
-                    <div className="message-bubble">
-                      <p className="message-text">{msg.text}</p>
-                      <span className="message-time">{msg.timestamp}</span>
+                    {!msg.isMe && (
+                      <div className="message-avatar">
+                        <ProfilePicture username={msg.sender} size="small" />
+                      </div>
+                    )}
+                    <div className="message-content">
+                      {!msg.isMe && <span className="message-sender">{msg.sender}</span>}
+                      <div className="message-bubble">
+                        <p className="message-text">{msg.text}</p>
+                        <span className="message-time">{msg.timestamp}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -155,7 +160,7 @@ const ChatScreen = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
-              <button type="submit" className="btn-primary btn-medium">
+              <button type="submit" className="btn btn-primary btn-medium">
                 Send
               </button>
             </form>

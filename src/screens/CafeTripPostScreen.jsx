@@ -31,7 +31,7 @@ const CafeTripPostScreen = () => {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
-          title: cafeName,
+          cafeName: cafeName,
           description,
           date: dateTime.toISOString(),
           location,
@@ -130,6 +130,8 @@ const CafeTripPostScreen = () => {
       </div>
     </div>
   );
+  
+
 };
 
 export default CafeTripPostScreen;

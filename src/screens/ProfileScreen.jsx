@@ -116,7 +116,7 @@ const ProfileScreen = () => {
               <div key={event.id} className="cafe-trip-post">
                 <h3 className="cafe-name">{event.cafeName}</h3>
                 <p className="location">📍 {event.location}</p>
-                <p>📅 {event.date}</p>
+                <p>{formatPrettyDate(event.date)}</p>
               </div>
             ))}
             </div> 
@@ -127,6 +127,22 @@ const ProfileScreen = () => {
       </div>
     </div>
   );
+  function formatPrettyDate(isoString) {
+    const dt = new Date(isoString);
+  
+    const date = dt.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  
+    const time = dt.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  
+    return `📅 ${date} • 🕒 ${time}`;
+  }
+  
 };
 
 export default ProfileScreen;

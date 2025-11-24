@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
+import ProfilePicture from '../components/ProfilePicture';
 import { RequestCard } from '../components/RequestCard';
 import { useNavigate } from 'react-router-dom';
 const API_BASE = 'http://localhost:3000/api';
@@ -202,11 +203,7 @@ const RequestScreen = () => {
         return (
           <div key={req._id} className="request-card status-pending">
             <div className="request-header">
-              <div className="profile-picture profile-picture-small">
-                <div className="profile-placeholder">
-                  {posterUsername.charAt(0).toUpperCase()}
-                </div>
-              </div>
+              <ProfilePicture username={posterUsername} size="small" />
               <div className="request-info">
                 <h4>{posterUsername}</h4>
                 <p className="cafe-name">{postTitle}</p>

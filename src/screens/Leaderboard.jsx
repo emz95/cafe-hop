@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
+import ProfilePicture from '../components/ProfilePicture';
 
 // Mock leaderboard data
 /*
@@ -53,9 +54,6 @@ const Leaderboard = () => {
   }, []);
 
   const getRankBadge = (rank) => {
-    if (rank === 1) return '🥇';
-    if (rank === 2) return '🥈';
-    if (rank === 3) return '🥉';
     return `#${rank}`;
   };
 
@@ -88,9 +86,7 @@ const Leaderboard = () => {
                   <span className="rank-badge">{getRankBadge(index + 1)}</span>
                 </div>
                 <div className="leaderboard-user-info">
-                  <div className="profile-picture profile-picture-small">
-                    <div className="profile-placeholder">{user.avatar}</div>
-                  </div>
+                  <ProfilePicture username={user.username} size="small" />
                   <div className="leaderboard-details">
                     <h3 className="leaderboard-username">{user.username}</h3>
                     <p className="leaderboard-trips">

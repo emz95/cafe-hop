@@ -7,13 +7,11 @@ const CafeCard = ({ cafe }) => {
   const renderTeaRating = (rating) => {
     const fullTeas = Math.floor(rating);
     const hasHalfTea = rating % 1 >= 0.5;
-    const emptyTeas = 5 - fullTeas - (hasHalfTea ? 1 : 0);
     
     return (
       <div className="tea-rating">
         {'🍵'.repeat(fullTeas)}
         {hasHalfTea && '🫖'}
-        {'⚪'.repeat(emptyTeas)}
       </div>
     );
   };

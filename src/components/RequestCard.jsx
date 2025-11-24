@@ -1,4 +1,5 @@
 import React from 'react';
+import ProfilePicture from './ProfilePicture';
 
 export const RequestCard = ({
   requests = [],
@@ -15,11 +16,7 @@ export const RequestCard = ({
       {requests.map((req) => (
         <div key={req.id} className="request-card">
           <div className="request-header">
-            <div className="profile-picture profile-picture-small">
-              <div className="profile-placeholder">
-                {req.username.charAt(0).toUpperCase()}
-              </div>
-            </div>
+            <ProfilePicture username={req.username} size="small" />
             <div className="request-info">
               <h4>{req.username}</h4>
               <p className="cafe-name">{req.cafeName}</p>
@@ -30,13 +27,13 @@ export const RequestCard = ({
           </div>
           <div className="request-actions">
             <button
-              className="btn-accept btn-small"
+              className="btn btn-primary btn-small"
               onClick={() => onApprove && onApprove(req.id)}
             >
               Accept
             </button>
             <button
-              className="btn-decline btn-small"
+              className="btn btn-secondary btn-small"
               onClick={() => onReject && onReject(req.id)}
             >
               Decline

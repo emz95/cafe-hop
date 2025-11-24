@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
@@ -33,8 +33,6 @@ const MainScreen = () => {
     loadPosts();
   }, []);
 
-  if (loading) return <p>Loading posts</p>;
-
   const handleJoin = (postId, joinByRequest) => {
     if (joinByRequest) {
       alert('Request sent! Waiting for approval.');
@@ -56,11 +54,15 @@ const MainScreen = () => {
   };
 
   const filteredPosts = posts.filter(post => {
-    // Search filter
-    const matchesSearch = post.cafeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.location.toLowerCase().includes(searchQuery.toLowerCase());
+    // Search filter - add safety checks for undefined values
+    const cafeName = post.cafeName || '';
+    const location = post.location || '';
+    const matchesSearch = cafeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         location.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
+
+  if (loading) return <p>Loading posts</p>;
 
   return (
     <div className="main-screen">

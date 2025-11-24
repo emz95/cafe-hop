@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import ProfilePicture from '../components/ProfilePicture';
 import {useAuth} from '../contexts/AuthContext'
 
 
@@ -8,17 +9,8 @@ const ProfileScreen = () => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [pastEvents, setPastEvents] = useState(null)
-  /*
-  const user = {
-    username: 'judyhopps',
-    email: 'judy.hopps@example.com',
-    firstName: 'Judy',
-    lastName: 'Hopps',
-    number: '(555) 123-4567',
-    bio: 'Coffee enthusiast!'
-  };
-  */
-  
+  const [profileImage, setProfileImage] = useState(null)
+
   useEffect(() => {
     async function loadUser() {
       try {
@@ -52,7 +44,7 @@ const ProfileScreen = () => {
           method: "GET",
         })
 
-        if(!postRes.ok) {
+        if(!res.ok) {
           throw new Error("Error fetching posts")
         }
         const data = await res.json()
@@ -73,12 +65,29 @@ const ProfileScreen = () => {
     init()
   }, [user])
 
-  /*
-  const pastEvents = [
-    { id: 1, cafeName: 'Stagger Cafe', date: '2025-10-15', location: 'Ktown' },
-    { id: 2, cafeName: 'Blue Bottle', date: '2025-10-20', location: 'SF' }
-  ];
-  */
+  useEffect(() => {
+    const savedImage = localStorage.getItem('profileImage');
+    if (savedImage) {
+      setProfileImage(savedImage);
+    }
+  }, []);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageData = reader.result;
+        setProfileImage(imageData);
+        localStorage.setItem('profileImage', imageData);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditClick = () => {
+    document.getElementById('profile-image-input').click();
+  };
 
   if (loading) return <p>Loading user</p>
   if (!user) return <p>Could not load user</p>
@@ -91,11 +100,20 @@ const ProfileScreen = () => {
           <h2>Profile</h2>
         </div>
         <div className="profile-header">
-          <div className="profile-picture profile-picture-large">
-            <div className="profile-placeholder">
-              {user.firstName.charAt(0)}
-            </div>
-          </div>
+          <input
+            type="file"
+            id="profile-image-input"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleImageUpload}
+          />
+          <ProfilePicture 
+            username={user.firstName} 
+            imageUrl={profileImage}
+            size="large" 
+            editable={true}
+            onEdit={handleEditClick}
+          />
           <div className="profile-details">
             <h2>{user.firstName} {user.lastName}</h2>
             <p className="profile-username">@{user.username}</p>

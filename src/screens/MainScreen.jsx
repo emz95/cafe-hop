@@ -7,40 +7,43 @@ const MainScreen = () => {
   const navigate = useNavigate();
   const [timeFilter, setTimeFilter] = useState('all'); // 'all', '24h', 'week', 'month'
   const [searchQuery, setSearchQuery] = useState('');
-  const [posts, setPosts] = useState([
-    // {
-    //   id: 1,
-    //   cafeName: 'Stagger Cafe',
-    //   location: 'Ktown',
-    //   date: '2025-11-05',
-    //   time: '2:00 PM',
-    //   posterUsername: 'judyhopps',
-    //   description: 'Looking for study buddies!',
-    //   joinByRequest: false,
-    //   joined: false
-    // },
-    {
-      id: 2,
-      cafeName: 'Blue Bottle Coffee',
-      location: 'Arts District',
-      date: '2025-11-18',
-      time: '10:00 AM',
-      posterUsername: 'nickwilde',
-      description: 'Morning coffee meetup!',
-      joinByRequest: true,
-      joined: false
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const res = await fetch(`http://localhost:3000/api/posts`, {
+          method: "GET",
+        });
+
+        if (!res.ok) {
+          throw new Error("Error fetching posts");
+        }
+        const data = await res.json();
+        setPosts(data);
+        console.log(data);
+
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
-  ]);
+    loadPosts();
+  }, []);
+
+  if (loading) return <p>Loading posts</p>;
 
   const handleJoin = (postId, joinByRequest) => {
     if (joinByRequest) {
       alert('Request sent! Waiting for approval.');
-      setPosts(posts.map(post => 
+      setPosts(posts.map(post =>
         post.id === postId ? { ...post, joined: true, requested: true } : post
       ));
     } else {
       alert('Successfully joined the trip!');
-      setPosts(posts.map(post => 
+      setPosts(posts.map(post =>
         post.id === postId ? { ...post, joined: true, requested: false } : post
       ));
     }
@@ -117,9 +120,9 @@ const MainScreen = () => {
           {filteredPosts.map(post => (
             <div key={post.id} className="cafe-trip-post">
               <div className="post-header">
-                <ProfilePicture username={post.posterUsername} size="small" />
+                <ProfilePicture username={post.author.username} size="small" />
                 <div className="post-user-info">
-                  <h4>{post.posterUsername}</h4>
+                  <h4>{post.author.username}</h4>
                 </div>
               </div>
               <div className="post-content">

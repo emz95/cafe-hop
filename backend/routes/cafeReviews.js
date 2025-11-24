@@ -3,10 +3,12 @@ const express = require('express');
 const { createReview, getReviewsByCafe, deleteReview } = require('../controllers/cafeReviewController');
 
 const { protect } = require('../middleware/authMiddleware');
+const { getCafes } = require('../controllers/cafeController');
 
 const router = express.Router();
 
 router.post('/', protect, createReview);
+router.get('/', protect, getCafes)
 router.get('/byCafe/:cafeId', protect, getReviewsByCafe);
 router.delete('/:id', protect, deleteReview);
 

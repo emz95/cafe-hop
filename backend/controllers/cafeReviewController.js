@@ -2,6 +2,11 @@ const asyncHandler = require('express-async-handler');
 
 const cafeReview = require('../models/CafeReview');
 
+const getCafes = asyncHandler(async (req, res) => {
+    const cafes = await cafeReview.find()
+    res.status(200).json(cafes)
+})
+
 const createReview = asyncHandler(async (req, res) => {
     const review = await cafeReview.create({
         cafe: req.body.cafe,
@@ -35,5 +40,6 @@ const deleteReview = asyncHandler(async (req, res) => {
 module.exports = {
     createReview,
     getReviewsByCafe,
-    deleteReview
+    deleteReview,
+    getCafes
 };

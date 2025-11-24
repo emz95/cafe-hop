@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import CafeCard from '../components/CafeRating';
-
+/*
 // Mock data for cafes - exported for reuse
 export const MOCK_CAFES = [
   { _id: '1', name: 'Stagger Cafe', location: 'Ktown', averageRating: 4.5, reviewCount: 12 },
@@ -11,16 +11,32 @@ export const MOCK_CAFES = [
   { _id: '5', name: 'Go Get Em Tiger', location: 'Los Feliz', averageRating: 4.7, reviewCount: 22 },
   { _id: '6', name: 'Intelligentsia', location: 'Silver Lake', averageRating: 4.4, reviewCount: 15 }
 ];
+*/
 
 const CafeReviewScreen = () => {
   const [cafes, setCafes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
+    async function loadCafes() {
+      try {
+        const res = await fetch ('http://localhost:3000/api/posts/leaderboard', {
+          
+        })
+      
+      } catch {
+
+      } finally {
+        setLoading(false)
+      }
+    }
+    /*
     setTimeout(() => {
       setCafes(MOCK_CAFES);
       setLoading(false);
     }, 300);
+    */
   }, []);
 
   return (

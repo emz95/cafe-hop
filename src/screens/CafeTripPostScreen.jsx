@@ -130,6 +130,8 @@ const CafeTripPostScreen = () => {
       </div>
     </div>
   );
+  
+
 };
 
 export default CafeTripPostScreen;

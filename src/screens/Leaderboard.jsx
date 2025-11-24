@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
 
 // Mock leaderboard data
+/*
 const MOCK_LEADERBOARD = [
   { id: 1, username: 'judyhopps', tripCount: 47, rank: 1, avatar: 'J' },
   { id: 2, username: 'nickwilde', tripCount: 42, rank: 2, avatar: 'N' },
@@ -15,17 +16,41 @@ const MOCK_LEADERBOARD = [
   { id: 9, username: 'yax', tripCount: 19, rank: 9, avatar: 'Y' },
   { id: 10, username: 'finnick', tripCount: 17, rank: 10, avatar: 'F' }
 ];
+*/
 
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function loadLeaderboard(){
+      try {
+        const res = await fetch ('http://localhost:3000/api/posts/leaderboard', {
+          method: "GET"
+        })
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || 'Failed to get leaderboard');
+        }
+        const data = await res.json()
+        setLeaderboard(data)
+        console.log(data)
+       
+      } catch {
+
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadLeaderboard()
     // Simulate loading delay
+    /*
     setTimeout(() => {
       setLeaderboard(MOCK_LEADERBOARD);
       setLoading(false);
     }, 300);
+    */
   }, []);
 
   const getRankBadge = (rank) => {
@@ -56,16 +81,16 @@ const Leaderboard = () => {
         {!loading && leaderboard.length > 0 && (
           <div className="leaderboard-container">
             {leaderboard.map((user, index) => (
-              <div key={user.id} className={`leaderboard-item ${getRankClass(user.rank)} ${index % 2 === 0 ? 'even-row' : 'odd-row'}`}>
+              <div key={user.id} className={`leaderboard-item ${getRankClass(index + 1)} ${index % 2 === 0 ? 'even-row' : 'odd-row'}`}>
                 <div className="leaderboard-rank">
-                  <span className="rank-badge">{getRankBadge(user.rank)}</span>
+                  <span className="rank-badge">{getRankBadge(index + 1)}</span>
                 </div>
                 <div className="leaderboard-user-info">
                   <ProfilePicture username={user.username} size="small" />
                   <div className="leaderboard-details">
                     <h3 className="leaderboard-username">{user.username}</h3>
                     <p className="leaderboard-trips">
-                      ☕ {user.tripCount} cafe {user.tripCount === 1 ? 'trip' : 'trips'}
+                      ☕ {user.trips} cafe {user.trips === 1 ? 'trip' : 'trips'}
                     </p>
                   </div>
                 </div>

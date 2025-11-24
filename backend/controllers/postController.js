@@ -8,7 +8,6 @@ const getPosts = asyncHandler(async (req, res) => {
         search,
         dateGoing,
         datePosted,
-        isOpenToJoin
     } = req.query
 
     const filter = {}
@@ -16,16 +15,15 @@ const getPosts = asyncHandler(async (req, res) => {
     if (search) {
         const regex = new RegExp(search, 'i')
         filter.$or = [
-            {title: regex},
+            {cafeName: regex},
             {description: regex},
             {location: regex},
-            {author: regex}
         ]
     }
     if (dateGoing) {
         const day = new Date(dateGoing)
         if(!isNaN(day)) {
-            const nextDay = newDate(day)
+            const nextDay = new Date(day)
             nextDay.setDate(nextDay.getDate() + 1)
             filter.date = {$gte: day, $lt: nextDay}
         }
@@ -33,23 +31,19 @@ const getPosts = asyncHandler(async (req, res) => {
     if (datePosted) {
         const day = new Date(datePosted)
         if(!isNaN(day)) {
-            const nextDay = newDate(day)
+            const nextDay = new Date(day)
             nextDay.setDate(nextDay.getDate() + 1)
             filter.createdAt = {$gte: day, $lt: nextDay}
         }
     }
 
-    if (isOpenToJoin !== undefined) {
-        filter.isOpenToJoin = isOpenToJoin === 'true'
-    }
+    console.log("Filter: ", filter )
 
     const posts = await Post.find(filter)
-        .sort({createdAt: -1})
+        .sort({date: 1})
         .populate('author', 'username')
+    console.log("posts")
 
-    if (posts.length === 0) {
-        return res.status(200).json({ message: 'No posts yet' })
-    }
     res.status(200).json(posts)
 })
 
@@ -142,10 +136,7 @@ const getLeaderboard = asyncHandler( async (req, res) => {
         addCount(join.user)
     })
 
-    const userIds = Object.keys(counts)
-    if (userIds.length === 0) {
-        return res.status(200).json([])
-    }
+    const userIds = [...counts.keys()]
 
     const users = await User.find({_id: {$in: userIds}}, 'username').lean()
 
@@ -154,7 +145,7 @@ const getLeaderboard = asyncHandler( async (req, res) => {
         return {
             _id: id,
             username: user.username,
-            trips: counts[id]
+            trips: counts.get(id)
         }
     }).sort((a, b) => b.trips - a.trips)
 

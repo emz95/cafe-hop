@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/User')
+const Post = require('../models/Post')
 
 const registerUser = asyncHandler(async (req, res) => {
     //check for required fields
@@ -79,6 +80,13 @@ const userInfo = asyncHandler(async (req, res) => {
     res.status(200).json(user)
 })
 
+const getUserPosts = asyncHandler(async (req, res) => {
+    const posts = await Post.find({ author: req.user.id })
+        .sort({ createdAt: -1 });
+    res.json(posts)
+})
+
+
 const updateUser = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user.id, req.body, {
         new: true,
@@ -154,11 +162,14 @@ const refresh = asyncHandler(async (req, res) => {
     }
 })
 
+
+
 module.exports = {
     registerUser,
     loginUser,
     userInfo,
     updateUser,
     refresh,
-    deleteUser
+    deleteUser,
+    getUserPosts
 }

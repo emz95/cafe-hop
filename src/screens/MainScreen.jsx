@@ -131,8 +131,8 @@ const MainScreen = () => {
                 <h3 className="cafe-name">{post.cafeName}</h3>
                 <p className="location">📍 {post.location}</p>
                 <div className="post-datetime">
-                  <span>📅 {post.date}</span>
-                  <span>🕐 {post.time}</span>
+                  <span>📅 {formatDate(post.date)}</span>
+                  <span>🕐 {formatTime(post.date)}</span>
                 </div>
                 <p className="description">{post.description}</p>
               </div>
@@ -151,6 +151,28 @@ const MainScreen = () => {
       </div>
     </div>
   );
+  function formatDate(isoString) {
+    const dt = new Date(isoString);
+  
+    const date = dt.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  
+    return `${date}`;
+  }
+  function formatTime(isoString) {
+    const dt = new Date(isoString);
+  
+    const time = dt.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  
+    return `${time}`;
+  }
+  
+  
 };
 
 export default MainScreen;

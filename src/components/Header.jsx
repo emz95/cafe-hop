@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const navItems = [
     { id: 'friends', label: 'Friends', path: '/friends' },
@@ -30,6 +32,19 @@ const Header = () => {
               {item.label}
             </button>
           ))}
+          <button
+            className="nav-item"
+            onClick={() => {
+              if (window.confirm('Are you sure you want to logout?')) {
+                logout();
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                navigate('/login');
+              }
+            }}
+          >
+            Logout
+          </button>
         </nav>
       </div>
     </header>

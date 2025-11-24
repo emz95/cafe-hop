@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import ProfilePicture from '../components/ProfilePicture';
 
 const MainScreen = () => {
   const navigate = useNavigate();
+  const [timeFilter, setTimeFilter] = useState('all'); // 'all', '24h', 'week', 'month'
+  const [searchQuery, setSearchQuery] = useState('');
   const [posts, setPosts] = useState([
     // {
     //   id: 1,
@@ -49,12 +52,56 @@ const MainScreen = () => {
     return post.joinByRequest ? 'Request to Join' : 'Join';
   };
 
+  const filteredPosts = posts.filter(post => {
+    // Search filter
+    const matchesSearch = post.cafeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         post.location.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  });
+
   return (
     <div className="main-screen">
       <Header />
       <div className="main-content">
         <div className="main-header">
-          <h2>Upcoming Cafe Trips</h2>
+          <div>
+            <h2>Upcoming Cafe Trips</h2>
+          </div>
+          <div className="header-controls">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search cafes or locations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="filter-buttons">
+          <button
+            className={`filter-btn ${timeFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('all')}
+          >
+            All
+          </button>
+          <button
+            className={`filter-btn ${timeFilter === '24h' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('24h')}
+          >
+            Last 24 Hours
+          </button>
+          <button
+            className={`filter-btn ${timeFilter === 'week' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('week')}
+          >
+            Last Week
+          </button>
+          <button
+            className={`filter-btn ${timeFilter === 'month' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('month')}
+          >
+            Last Month
+          </button>
         </div>
         <button 
           className="create-trip-fab" 
@@ -64,12 +111,13 @@ const MainScreen = () => {
           +
         </button>
         <div className="posts-grid">
-          {posts.map(post => (
+          {filteredPosts.length === 0 && (
+            <p className="empty-message">No trips found matching your search.</p>
+          )}
+          {filteredPosts.map(post => (
             <div key={post.id} className="cafe-trip-post">
               <div className="post-header">
-                <div className="profile-picture profile-picture-small">
-                  <div className="profile-placeholder">{post.posterUsername.charAt(0)}</div>
-                </div>
+                <ProfilePicture username={post.posterUsername} size="small" />
                 <div className="post-user-info">
                   <h4>{post.posterUsername}</h4>
                 </div>
@@ -85,7 +133,7 @@ const MainScreen = () => {
               </div>
               <div className="post-actions">
                 <button 
-                  className={post.joined ? "btn-secondary btn-medium" : "btn-primary btn-medium"}
+                  className={post.joined ? "btn btn-secondary btn-medium" : "btn btn-primary btn-medium"}
                   onClick={() => handleJoin(post.id, post.joinByRequest)}
                   disabled={post.joined}
                 >

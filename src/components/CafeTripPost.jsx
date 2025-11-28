@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import ReviewCard from './Button';
-import { MOCK_CAFES as MOCK_CAFES_ARRAY } from '../screens/CafeReviewScreen';
+import { useAuth } from '../contexts/AuthContext';
+
 
 // Convert array to object for quick lookup by ID
+/*
 const MOCK_CAFES = MOCK_CAFES_ARRAY.reduce((acc, cafe) => {
   acc[cafe._id] = cafe;
   return acc;
 }, {});
-
+*/
+/*
 // Mock reviews data (replace with API call when backend is ready)
 const MOCK_REVIEWS = [
   {
@@ -37,13 +40,14 @@ const MOCK_REVIEWS = [
     date: '2025-11-05'
   }
 ];
-
+*/
 const CafeDetailScreen = () => {
   const { cafeId } = useParams();
   const navigate = useNavigate();
   const [cafe, setCafe] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {token} = useAuth()
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({
     rating: 5,
@@ -52,15 +56,57 @@ const CafeDetailScreen = () => {
   });
 
   useEffect(() => {
-    // Simulate loading delay
-    setTimeout(() => {
-      const cafeData = MOCK_CAFES[cafeId];
-      if (cafeData) {
-        setCafe(cafeData);
-        setReviews(MOCK_REVIEWS);
+    async function loadCafe() {
+      try {
+        const res = await fetch (`http://localhost:3000/api/cafes/${cafeId}`, {
+          method: "GET",
+        })
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || 'Failed to load cafe');
+        }
+        const data = await res.json()
+        
+        setCafe(data)
+      
+      } catch(err) {
+        console.log(err.message);
       }
+    }
+
+    async function loadReviews() {
+      try {
+        const res = await fetch (`http://localhost:3000/api/cafeReviews/byCafe/${cafeId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        })
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || 'Failed to load reviews');
+        }
+        const data = await res.json()
+        
+        setReviews(data)
+
+      } catch (err) {
+        console.log(err.message)
+      }
+    }
+    async function init() {
+      setLoading(true);
+      await Promise.all([loadCafe(), loadReviews()]);
       setLoading(false);
-    }, 300);
+    }
+  
+    if (cafeId) {
+      init();
+    }
+
+
   }, [cafeId]);
 
   const renderTeaRating = (rating) => {
@@ -146,9 +192,9 @@ const CafeDetailScreen = () => {
             <h1 className="cafe-detail-name">{cafe.name}</h1>
             <p className="cafe-detail-location">📍 {cafe.location}</p>
             <div className="cafe-detail-rating">
-              {renderTeaRating(cafe.averageRating)}
+              {renderTeaRating(cafe.avgRating)}
               <span className="rating-text-large">
-                {cafe.averageRating.toFixed(1)} / 5.0
+                {cafe.avgRating.toFixed(1)} / 5.0
               </span>
             </div>
             <p className="cafe-detail-review-count">
@@ -252,5 +298,8 @@ const CafeDetailScreen = () => {
     </div>
   );
 };
+
+
+
 
 export default CafeDetailScreen;

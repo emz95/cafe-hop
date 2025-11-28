@@ -16,8 +16,15 @@ const createCafe = asyncHandler(async (req, res) => {
     res.status(201).json(Cafe);
 })
 
+const getCafeByID = asyncHandler(async (req, res) => {
+    const Cafe = await cafe.findById(req.params.id).lean();
+    if(!Cafe) res.status(404)
+    res.status(200).json(Cafe);
+})
+
 module.exports = {
     getCafes,
-    createCafe
+    createCafe,
+    getCafeByID
 
 }

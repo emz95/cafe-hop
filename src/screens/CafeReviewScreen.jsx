@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import CafeCard from '../components/CafeRating';
+import { useAuth } from '../contexts/AuthContext';
 /*
 // Mock data for cafes - exported for reuse
 export const MOCK_CAFES = [
@@ -16,21 +17,36 @@ export const MOCK_CAFES = [
 const CafeReviewScreen = () => {
   const [cafes, setCafes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {token} = useAuth()
 
   useEffect(() => {
 
     async function loadCafes() {
       try {
-        const res = await fetch ('http://localhost:3000/api/posts/leaderboard', {
-          
+        const res = await fetch ('http://localhost:3000/api/cafeReviews', {
+          method: "GET",
+          credentials: 'include',
+          headers: {
+            Authorization: `Bearer ${token}` 
+          }
         })
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || 'Failed to load cafes');
+        }
+        const data = await res.json()
+        
+        setCafes(data)
       
-      } catch {
+      } catch(err) {
+        console.log(err.message);
 
       } finally {
         setLoading(false)
       }
     }
+    loadCafes()
+
     /*
     setTimeout(() => {
       setCafes(MOCK_CAFES);

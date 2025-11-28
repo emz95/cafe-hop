@@ -1,13 +1,11 @@
 const express = require('express');
 
-const { getCafes, createCafe } = require('../controllers/cafeController');
-
-const { protect } = require('../middleware/authMiddleware');
+const { getCafes, createCafe, getCafeByID } = require('../controllers/cafeController');
 
 const router = express.Router();
 
 router.post('/', createCafe);
-
 router.get('/', getCafes); 
+router.get('/:id', getCafeByID)
 
 module.exports = router; 

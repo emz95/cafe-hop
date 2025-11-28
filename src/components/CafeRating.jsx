@@ -28,10 +28,10 @@ const CafeCard = ({ cafe }) => {
       </div>
       <div className="cafe-card-content">
         <h3 className="cafe-card-name">{cafe.name}</h3>
-        <p className="cafe-card-location">📍 {cafe.location}</p>
+        {/*<p className="cafe-card-location">📍 {cafe.location}</p> */}
         <div className="cafe-card-rating">
-          {renderTeaRating(cafe.averageRating)}
-          <span className="rating-text">{cafe.averageRating.toFixed(1)} / 5</span>
+          {renderTeaRating(cafe.avgRating)}
+          <span className="rating-text">{cafe.avgRating.toFixed(1)} / 5</span>
         </div>
         <p className="cafe-card-reviews">{cafe.reviewCount} reviews</p>
       </div>

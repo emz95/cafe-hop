@@ -34,7 +34,8 @@ const MainScreen = () => {
       try {
         setError(null);
         const [postsRes, reqRes] = await Promise.all([
-          fetch(`${API_BASE}/posts`, {
+          // 👇 NEW: tell backend which time window we want
+          fetch(`${API_BASE}/posts?timeFilter=${timeFilter}`, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -69,7 +70,8 @@ const MainScreen = () => {
       }
     }
     loadPosts();
-  }, [userId, token]);
+  // 👇 NEW: refetch when timeFilter changes
+  }, [userId, token, timeFilter]);
 
 
   const getRequestsForPost = (postId) => requests.find((r) => r.post._id === postId);
@@ -160,19 +162,19 @@ const MainScreen = () => {
             className={`filter-btn ${timeFilter === '24h' ? 'active' : ''}`}
             onClick={() => setTimeFilter('24h')}
           >
-            Last 24 Hours
+            Next 24 Hours
           </button>
           <button
             className={`filter-btn ${timeFilter === 'week' ? 'active' : ''}`}
             onClick={() => setTimeFilter('week')}
           >
-            Last Week
+            Next Week
           </button>
           <button
             className={`filter-btn ${timeFilter === 'month' ? 'active' : ''}`}
             onClick={() => setTimeFilter('month')}
           >
-            Last Month
+            Next Month
           </button>
         </div>
         <button 

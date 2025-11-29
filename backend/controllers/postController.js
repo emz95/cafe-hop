@@ -8,6 +8,7 @@ const getPosts = asyncHandler(async (req, res) => {
         search,
         dateGoing,
         datePosted,
+        timeFilter, // 👈 NEW: optional time window
     } = req.query
 
     const filter = {}
@@ -36,6 +37,36 @@ const getPosts = asyncHandler(async (req, res) => {
             filter.createdAt = {$gte: day, $lt: nextDay}
         }
     }
+
+    // 👇 NEW: only show trips that haven't happened yet, plus optional window
+    const now = new Date();
+
+    // start with any existing date filter (from dateGoing), then enforce "future only"
+    let dateFilter = filter.date || {};
+    dateFilter.$gte = dateFilter.$gte && dateFilter.$gte > now ? dateFilter.$gte : now;
+
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const ONE_WEEK = 7 * ONE_DAY;
+    const ONE_MONTH = 30 * ONE_DAY;
+
+    let upperBound = null;
+    if (timeFilter === '24h') {
+        upperBound = new Date(now.getTime() + ONE_DAY);
+    } else if (timeFilter === 'week') {
+        upperBound = new Date(now.getTime() + ONE_WEEK);
+    } else if (timeFilter === 'month') {
+        upperBound = new Date(now.getTime() + ONE_MONTH);
+    }
+
+    if (upperBound) {
+        // keep any stricter existing upper bound (e.g., from dateGoing)
+        if (!dateFilter.$lte || dateFilter.$lte > upperBound) {
+            dateFilter.$lte = upperBound;
+        }
+    }
+
+    filter.date = dateFilter;
+    // 👆 END NEW LOGIC
 
     console.log("Filter: ", filter )
 

@@ -6,8 +6,7 @@ const User = require('../models/User');
 const getPosts = asyncHandler(async (req, res) => {
     const {
         search,
-        dateGoing,
-        datePosted,
+        timeFilter
     } = req.query
 
     const filter = {}
@@ -20,21 +19,24 @@ const getPosts = asyncHandler(async (req, res) => {
             {location: regex},
         ]
     }
-    if (dateGoing) {
-        const day = new Date(dateGoing)
-        if(!isNaN(day)) {
-            const nextDay = new Date(day)
-            nextDay.setDate(nextDay.getDate() + 1)
-            filter.date = {$gte: day, $lt: nextDay}
+    const now = new Date()
+
+    filter.date = { $gte: now };
+
+    if (timeFilter && timeFilter !== 'all') {
+        let to = null;
+
+        if (timeFilter === '24h') {
+            to = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        } else if (timeFilter === 'week') {
+            to = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        } else if (timeFilter === 'month') {
+            to = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
         }
-    }
-    if (datePosted) {
-        const day = new Date(datePosted)
-        if(!isNaN(day)) {
-            const nextDay = new Date(day)
-            nextDay.setDate(nextDay.getDate() + 1)
-            filter.createdAt = {$gte: day, $lt: nextDay}
+        if (to) {
+            filter.date = { $gte: now, $lte: to }
         }
+
     }
 
     console.log("Filter: ", filter )

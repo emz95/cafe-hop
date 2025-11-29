@@ -13,7 +13,20 @@ const MainScreen = () => {
   useEffect(() => {
     async function loadPosts() {
       try {
-        const res = await fetch(`http://localhost:3000/api/posts`, {
+        setLoading(true)
+        const params = new URLSearchParams()
+        const q = searchQuery.trim()
+        if (q) params.set('search', q)
+
+        if (timeFilter && timeFilter !== 'all') {
+          params.set('timeFilter', timeFilter)
+        }
+
+        const url = params.toString()
+        ? `http://localhost:3000/api/posts?${params.toString()}`
+        : `http://localhost:3000/api/posts`
+
+        const res = await fetch(url, {
           method: "GET",
         });
 
@@ -31,7 +44,7 @@ const MainScreen = () => {
       }
     }
     loadPosts();
-  }, []);
+  }, [searchQuery, timeFilter]);
 
   if (loading) return <p>Loading posts</p>;
 
@@ -54,13 +67,9 @@ const MainScreen = () => {
     if (post.joined) return 'Joined';
     return post.joinByRequest ? 'Request to Join' : 'Join';
   };
+  
 
-  const filteredPosts = posts.filter(post => {
-    // Search filter
-    const matchesSearch = post.cafeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.location.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
+  
 
   return (
     <div className="main-screen">
@@ -114,10 +123,10 @@ const MainScreen = () => {
           +
         </button>
         <div className="posts-grid">
-          {filteredPosts.length === 0 && (
+          {posts.length === 0 && (
             <p className="empty-message">No trips found matching your search.</p>
           )}
-          {filteredPosts.map(post => (
+          {posts.map(post => (
             <div key={post.id} className="cafe-trip-post">
               <div className="post-header">
                 <ProfilePicture username={post.author.username} size="small" />

@@ -36,12 +36,16 @@ const approveJoinRequest = asyncHandler(async (req, res) => {
     }
     
     const doc = await Post.findById(joinRequest.post).select('cafeName').lean();
-    const nameChat = doc.title;
+    const chatName = doc.cafeName;
+    if (!doc) {
+        res.status(404);
+        throw new Error('Post not found');
+      }
     const groupChat = await GroupChat.findOneAndUpdate(
         {post: joinRequest.post},
         {
             $setOnInsert: {
-                chatName: nameChat,
+                chatName,
                 post: joinRequest.post,
                 postAuthor: joinRequest.poster
             },

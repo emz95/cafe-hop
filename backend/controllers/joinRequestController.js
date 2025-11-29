@@ -35,7 +35,7 @@ const approveJoinRequest = asyncHandler(async (req, res) => {
         throw new Error('Join Request not found');
     }
     
-    const doc = await Post.findById(joinRequest.post).select('title').lean();
+    const doc = await Post.findById(joinRequest.post).select('cafeName').lean();
     const nameChat = doc.title;
     const groupChat = await GroupChat.findOneAndUpdate(
         {post: joinRequest.post},
@@ -73,7 +73,7 @@ const getJoinRequestsForPost = asyncHandler(async (req, res) => {
     })
     .populate('poster', 'username email _id')
     .populate('requester', 'username email _id')
-    .populate('post', 'title _id')
+    .populate('post', 'cafeName location date dateGoing time _id')
     .sort({createdAt: -1})
     .lean();
     res.json(requests);
@@ -85,12 +85,24 @@ const getJoinRequestsForPoster = asyncHandler(async (req, res) => {
          status: 'Pending' 
         })
         .populate('requester', 'username email _id')
-        .populate('post', 'title _id')
+        .populate('post', 'cafeName location date dateGoing time _id')
         .sort({createdAt: -1})
         .lean();
     res.json(requests);
 
 });
+
+const getAllJoinRequestsForRequester = asyncHandler(async (req, res) => {
+    const requests = await JoinRequest.find({
+        requester: req.params.requesterId,
+    })
+    .populate('poster', 'username email _id')
+    .populate('post', 'cafeName location date time _id')
+    .sort({createdAt: -1})
+    .lean();
+    res.json(requests);
+});
+
 
 const getJoinRequestsForRequester = asyncHandler(async (req, res) => {
     const requests = await JoinRequest.find({
@@ -98,7 +110,7 @@ const getJoinRequestsForRequester = asyncHandler(async (req, res) => {
             status: 'Pending'
         })
         .populate('poster', 'username email _id')
-        .populate('post', 'title _id')
+        .populate('post')
         .sort({createdAt: -1})
         .lean();
     res.json(requests);
@@ -113,6 +125,7 @@ module.exports = {
     rejectJoinRequest,
     getJoinRequestsForPost,
     getJoinRequestsForPoster,
+    getAllJoinRequestsForRequester,
     getJoinRequestsForRequester
 }; 
 

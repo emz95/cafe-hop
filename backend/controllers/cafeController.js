@@ -18,7 +18,9 @@ const createCafe = asyncHandler(async (req, res) => {
 
 const getCafeByID = asyncHandler(async (req, res) => {
     const Cafe = await cafe.findById(req.params.id).lean();
-    if(!Cafe) res.status(404)
+    if (!cafe) {
+        return res.status(404).json({ error: "Cafe not found" });
+    }    
     res.status(200).json(Cafe);
 })
 

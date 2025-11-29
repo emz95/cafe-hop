@@ -1,9 +1,10 @@
 const asyncHandler = require('express-async-handler');
 
 const cafeReview = require('../models/CafeReview');
+const Cafe = require('../models/Cafe');
 
 const getCafes = asyncHandler(async (req, res) => {
-    const cafes = await cafeReview.find()
+    const cafes = await Cafe.find()
     res.status(200).json(cafes)
 })
 
@@ -11,17 +12,21 @@ const createReview = asyncHandler(async (req, res) => {
     const review = await cafeReview.create({
         cafe: req.body.cafe,
         reviewer: req.user._id,
+        description: req.body.description,
         rating: req.body.rating,
         photos: req.body.photos
 
     });
+    await review.populate('reviewer', 'username _id profilePictureUrl');
+
+    await Cafe.calcAvgRating(review.cafe);
     res.status(201).json(review);
 
 });
 
 const getReviewsByCafe = asyncHandler(async (req, res) => {
     const reviews = await cafeReview.find({cafe: req.params.cafeId}).
-    select('reviewer rating photos createdAt').
+    select('reviewer rating photos description createdAt').
     populate('reviewer', 'username _id profilePictureUrl').
     sort({createdAt: -1}).
     lean();
@@ -33,6 +38,7 @@ const deleteReview = asyncHandler(async (req, res) => {
     if(!review) {
         return res.json({error: "could not delete review"});
     }
+    await Cafe.calcAvgRating(review.cafe);
     return res.json({message: "review deleted"});
     
 });

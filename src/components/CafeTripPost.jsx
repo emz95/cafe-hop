@@ -83,6 +83,7 @@ const CafeDetailScreen = () => {
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
+          
         })
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
@@ -157,19 +158,38 @@ const CafeDetailScreen = () => {
     }));
   };
 
-  const handleSubmitReview = (e) => {
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
     const review = {
-      id: Date.now(),
-      username: 'currentUser', // Replace with actual user
+      cafe: cafeId,
       rating: newReview.rating,
-      text: newReview.text,
-      images: newReview.images,
-      date: new Date().toISOString().split('T')[0]
+      description: newReview.text,
+      photos: newReview.images,
     };
-    setReviews([review, ...reviews]);
-    setNewReview({ rating: 5, text: '', images: [] });
-    setShowReviewForm(false);
+
+    try{
+      const res = await fetch("http://localhost:3000/api/cafeReviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,   
+        },
+        body: JSON.stringify(review),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to submit review");
+      }
+      const savedReview = await res.json(); 
+      setReviews((prev) => [savedReview, ...prev]);
+      setNewReview({ rating: 5, text: "", images: [] });
+      setShowReviewForm(false);
+
+
+
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
   };
 
   const removeImage = (index) => {
@@ -289,7 +309,7 @@ const CafeDetailScreen = () => {
           ) : (
             <div className="reviews-list">
               {reviews.map(review => (
-                <ReviewCard key={review.id} review={review} />
+                <ReviewCard key={review._id} review={review} />
               ))}
             </div>
           )}

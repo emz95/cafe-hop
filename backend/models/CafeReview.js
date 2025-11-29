@@ -17,6 +17,9 @@ const cafeReviewSchema = new Schema({
         min: 1,
         max: 5
     },
+    description: {
+        type: String
+    },
     photos: [String]
 
 

@@ -5,15 +5,18 @@ const ReviewCard = ({ review }) => {
     return '🍵'.repeat(rating) + '⚪'.repeat(5 - rating);
   };
 
+
+  
+
   return (
     <div className="review-card">
       <div className="review-header">
         <div className="review-user-info">
           <div className="profile-picture profile-picture-small">
-            <div className="profile-placeholder">{review.username.charAt(0).toUpperCase()}</div>
+            <div className="profile-placeholder">{review.reviewer.username.charAt(0).toUpperCase()}</div>
           </div>
           <div>
-            <h4 className="review-username">{review.username}</h4>
+            <h4 className="review-username">{review.reviewer.username}</h4>
             <p className="review-date">{review.date}</p>
           </div>
         </div>
@@ -21,10 +24,10 @@ const ReviewCard = ({ review }) => {
           {renderTeaRating(review.rating)}
         </div>
       </div>
-      <p className="review-text">{review.text}</p>
-      {review.images && review.images.length > 0 && (
+      <p className="review-text">{review.description}</p>
+      {review.photos && review.photos.length > 0 && (
         <div className="review-images">
-          {review.images.map((img, idx) => (
+          {review.photos.map((img, idx) => (
             <img key={idx} src={img} alt={`Review ${idx + 1}`} className="review-image" />
           ))}
         </div>

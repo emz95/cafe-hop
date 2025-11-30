@@ -13,7 +13,9 @@ html, body, #root {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-display: swap;
+
   color: var(--text-primary);
   background: var(--bg-secondary);
   line-height: 1.6;
@@ -149,6 +151,7 @@ body {
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
+  font-family: 'Comfortaa', 'Poppins', sans-serif;
   transition: all 0.3s ease;
   border-radius: var(--radius-md);
 }

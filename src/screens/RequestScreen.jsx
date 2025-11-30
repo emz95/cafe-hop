@@ -189,6 +189,7 @@ const RequestScreen = () => {
                 id: req._id,
                 userId: req.requester?._id,
                 username: req.requester?.username || 'Unknown',
+                profilePictureUrl: req.requester?.profilePictureUrl,
                 cafeName: req.post?.cafeName || 'Unknown cafe',
                 location: req.post?.location || 'Unknown location',
                 date: iso ? formatDate(iso) : '',
@@ -227,6 +228,7 @@ const RequestScreen = () => {
                     <div className="request-header">
                       <ProfilePicture
                         username={posterUsername}
+                        imageUrl={req.poster?.profilePictureUrl}
                         size="small"
                       />
                       <div className="request-info">

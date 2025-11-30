@@ -43,7 +43,7 @@ const getPosts = asyncHandler(async (req, res) => {
 
     const posts = await Post.find(filter)
         .sort({date: 1})
-        .populate('author', 'username')
+        .populate('author', 'username profilePictureUrl')
     console.log("posts")
 
     res.status(200).json(posts)
@@ -112,7 +112,7 @@ const getUserPosts = asyncHandler( async (req, res)=> {
     const userId = req.params.id
     const posts = await Post.find({author: userId})
         .sort({createdAt: -1})
-        .populate('author', 'username')
+        .populate('author', 'username profilePictureUrl')
 
     if (posts.length === 0) {
         return res.status(200).json({ message: 'No posts yet' })
@@ -147,6 +147,7 @@ const getLeaderboard = asyncHandler( async (req, res) => {
         return {
             _id: id,
             username: user.username,
+            profilePictureUrl: user.profilePictureUrl,
             trips: counts.get(id)
         }
     }).sort((a, b) => b.trips - a.trips)

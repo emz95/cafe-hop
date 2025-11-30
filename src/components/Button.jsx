@@ -1,4 +1,5 @@
 import React from 'react';
+import ProfilePicture from './ProfilePicture';
 
 const ReviewCard = ({ review, onUserClick, onEdit, onDelete, currentUserId }) => {
   const renderTeaRating = (rating) => {
@@ -12,9 +13,11 @@ const ReviewCard = ({ review, onUserClick, onEdit, onDelete, currentUserId }) =>
     <div className="review-card">
       <div className="review-header">
         <div className="review-user-info">
-          <div className="profile-picture profile-picture-small">
-            <div className="profile-placeholder">{review.reviewer.username.charAt(0).toUpperCase()}</div>
-          </div>
+          <ProfilePicture 
+            username={review.reviewer.username} 
+            imageUrl={review.reviewer.profilePictureUrl}
+            size="small" 
+          />
           <div>
             <h4 className="review-username clickable" onClick={() => onUserClick && onUserClick(review.reviewer._id)}>{review.reviewer.username}</h4>
             <p className="review-date">{review.date}</p>

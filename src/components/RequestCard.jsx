@@ -17,7 +17,11 @@ export const RequestCard = ({
       {requests.map((req) => (
         <div key={req.id} className="request-card">
           <div className="request-header">
-            <ProfilePicture username={req.username} size="small" />
+            <ProfilePicture 
+              username={req.username} 
+              imageUrl={req.profilePictureUrl}
+              size="small" 
+            />
             <div className="request-info">
               <h4 className="clickable" onClick={() => onUserClick && onUserClick(req.userId)}>{req.username}</h4>
               <p className="cafe-name">{req.cafeName}</p>

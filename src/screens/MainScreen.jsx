@@ -250,7 +250,11 @@ const MainScreen = () => {
           {filteredPosts.map(post => (
             <div key={post._id} className="cafe-trip-post">
               <div className="post-header">
-                <ProfilePicture username={post.author.username} size="small" />
+                <ProfilePicture 
+                  username={post.author.username} 
+                  imageUrl={post.author.profilePictureUrl}
+                  size="small" 
+                />
                 <div 
                   className="post-user-info clickable" 
                   onClick={() => setSelectedUserId(post.author._id)}

@@ -88,7 +88,11 @@ const Leaderboard = () => {
                   <span className="rank-badge">{getRankBadge(index + 1)}</span>
                 </div>
                 <div className="leaderboard-user-info clickable" onClick={() => setSelectedUserId(user._id || user.id)}>
-                  <ProfilePicture username={user.username} size="small" />
+                  <ProfilePicture 
+                    username={user.username} 
+                    imageUrl={user.profilePictureUrl}
+                    size="small" 
+                  />
                   <div className="leaderboard-details">
                     <h3 className="leaderboard-username">{user.username}</h3>
                     <p className="leaderboard-trips">

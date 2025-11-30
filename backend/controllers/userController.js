@@ -86,6 +86,16 @@ const getUserPosts = asyncHandler(async (req, res) => {
     res.json(posts)
 })
 
+const getUserById = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).select('-password')
+    
+    if(!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+    
+    res.status(200).json(user)
+})
 
 const updateUser = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user.id, req.body, {
@@ -171,5 +181,6 @@ module.exports = {
     updateUser,
     refresh,
     deleteUser,
-    getUserPosts
+    getUserPosts,
+    getUserById
 }

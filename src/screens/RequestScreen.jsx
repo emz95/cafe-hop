@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
 import { RequestCard } from '../components/RequestCard';
+import UserProfileModal from '../components/UserProfileModal';
 import { useNavigate } from 'react-router-dom';
 
 const API_BASE = 'http://localhost:3000/api';
@@ -31,6 +32,7 @@ const RequestScreen = () => {
   const [sentRequests, setSentRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
@@ -71,25 +73,33 @@ const RequestScreen = () => {
         ]);
 
         console.log('posterRequests status:', posterRequests.status);
+        console.log('requesterRequests status:', requesterRequests.status);
 
-        if (!posterRequests.ok) {
-          setError(
-            `Failed to fetch pending requests (status ${posterRequests.status})`
-          );
+        // Handle pending requests
+        let pendingData = [];
+        if (posterRequests.ok) {
+          pendingData = await posterRequests.json();
+        } else if (posterRequests.status === 401) {
+          console.warn('Unauthorized - token may be expired');
+          setError('Session expired. Please log in again.');
           setLoading(false);
           return;
+        } else {
+          console.warn('Failed to fetch pending requests, using empty array');
         }
 
-        if (!requesterRequests.ok) {
-          setError(
-            `Failed to fetch sent requests (status ${requesterRequests.status})`
-          );
+        // Handle sent requests
+        let sentData = [];
+        if (requesterRequests.ok) {
+          sentData = await requesterRequests.json();
+        } else if (requesterRequests.status === 401) {
+          console.warn('Unauthorized - token may be expired');
+          setError('Session expired. Please log in again.');
           setLoading(false);
           return;
+        } else {
+          console.warn('Failed to fetch sent requests, using empty array');
         }
-
-        const pendingData = await posterRequests.json();
-        const sentData = await requesterRequests.json();
 
         setPendingRequests(pendingData);
         setSentRequests(sentData);
@@ -177,6 +187,7 @@ const RequestScreen = () => {
               const iso = req.post?.dateGoing || req.post?.date || '';
               return {
                 id: req._id,
+                userId: req.requester?._id,
                 username: req.requester?.username || 'Unknown',
                 cafeName: req.post?.cafeName || 'Unknown cafe',
                 location: req.post?.location || 'Unknown location',
@@ -188,6 +199,7 @@ const RequestScreen = () => {
             })}
             onApprove={handleApprove}
             onReject={handleReject}
+            onUserClick={setSelectedUserId}
           />
         </div>
 
@@ -218,7 +230,7 @@ const RequestScreen = () => {
                         size="small"
                       />
                       <div className="request-info">
-                        <h4>{posterUsername}</h4>
+                        <h4 className="clickable" onClick={() => setSelectedUserId(req.poster?._id)}>{posterUsername}</h4>
                         <p className="cafe-name">{postTitle}</p>
                         <p className="location-time">
                           📍 {location} • 📅 {date} • 🕐 {time}
@@ -237,6 +249,12 @@ const RequestScreen = () => {
           )}
         </div>
       </div>
+      {selectedUserId && (
+        <UserProfileModal 
+          userId={selectedUserId} 
+          onClose={() => setSelectedUserId(null)} 
+        />
+      )}
     </div>
   );
 };

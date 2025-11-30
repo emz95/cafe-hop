@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
+import UserProfileModal from '../components/UserProfileModal';
 
 const API_BASE = 'http://localhost:3000/api';
 
 const ChatScreen = () => {
-  const navigate = useNavigate();
-
   const [chats, setChats] = useState([]);
   const [loadingChats, setLoadingChats] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +15,7 @@ const ChatScreen = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   // 👉 Get auth info from localStorage
   const token = localStorage.getItem('token');
@@ -86,10 +85,16 @@ const ChatScreen = () => {
         }
 
         if (!res.ok) {
-          const message =
-            (data && (data.message || data.error)) ||
-            `Failed to fetch chats (status ${res.status})`;
-          throw new Error(message);
+          // Handle 401 specifically
+          if (res.status === 401) {
+            console.warn('Unauthorized - token may be expired');
+            setError('Session expired. Please log in again.');
+            return;
+          }
+          // For other errors, just use empty array (user might not have chats yet)
+          console.warn(`Failed to fetch chats (status ${res.status}), using empty array`);
+          setChats([]);
+          return;
         }
 
         // data: [{ _id, chatName, post, updatedAt? }, ...]
@@ -119,7 +124,7 @@ const ChatScreen = () => {
   }, [userId, token]);
 
   // 🔹 Fetch messages for a specific chat
-  async function loadMessagesForChat(chatId, { showSpinner = true } = {}) {
+  const loadMessagesForChat = useCallback(async (chatId, { showSpinner = true } = {}) => {
     if (!token) {
       setMessagesError('Not logged in');
       return;
@@ -168,6 +173,7 @@ const ChatScreen = () => {
         return {
           id: msg._id,
           sender: isMe ? 'me' : senderObj.username || 'Unknown',
+          senderId: senderObj._id,
           text: msg.text,
           timestamp: formatMessageTimestamp(msg.createdAt),
           isMe,
@@ -181,7 +187,7 @@ const ChatScreen = () => {
     } finally {
       if (showSpinner) setLoadingMessages(false);
     }
-  }
+  }, [token, userId]);
 
   const handleChatClick = (chat) => {
     setSelectedChat(chat);
@@ -212,7 +218,7 @@ const ChatScreen = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [selectedChat, token]); // re-setup if selectedChat or token changes
+  }, [selectedChat, token, loadMessagesForChat]); // re-setup if selectedChat or token changes
 
   // 🔹 Send a real message
   const handleSendMessage = async (e) => {
@@ -359,13 +365,13 @@ const ChatScreen = () => {
                       }`}
                     >
                       {!msg.isMe && (
-                        <div className="message-avatar">
+                        <div className="message-avatar" onClick={() => setSelectedUserId(msg.senderId)} style={{ cursor: 'pointer' }}>
                           <ProfilePicture username={msg.sender} size="small" />
                         </div>
                       )}
                       <div className="message-content">
                         {!msg.isMe && (
-                          <span className="message-sender">{msg.sender}</span>
+                          <span className="message-sender clickable" onClick={() => setSelectedUserId(msg.senderId)}>{msg.sender}</span>
                         )}
                         <div className="message-bubble">
                           <p className="message-text">{msg.text}</p>
@@ -405,6 +411,12 @@ const ChatScreen = () => {
           </>
         )}
       </div>
+      {selectedUserId && (
+        <UserProfileModal 
+          userId={selectedUserId} 
+          onClose={() => setSelectedUserId(null)} 
+        />
+      )}
     </div>
   );
 };

@@ -33,6 +33,34 @@ const getReviewsByCafe = asyncHandler(async (req, res) => {
     res.json(reviews);
 });
 
+const updateReview = asyncHandler(async (req, res) => {
+    const review = await cafeReview.findById(req.params.id);
+    
+    if(!review) {
+        res.status(404);
+        throw new Error('Review not found');
+    }
+    
+    // Check if user is the reviewer
+    if(review.reviewer.toString() !== req.user._id.toString()) {
+        res.status(403);
+        throw new Error('Not authorized to update this review');
+    }
+    
+    const updatedReview = await cafeReview.findByIdAndUpdate(
+        req.params.id,
+        {
+            rating: req.body.rating,
+            description: req.body.description,
+            photos: req.body.photos
+        },
+        { new: true, runValidators: true }
+    ).populate('reviewer', 'username _id profilePictureUrl');
+    
+    await Cafe.calcAvgRating(review.cafe);
+    res.json(updatedReview);
+});
+
 const deleteReview = asyncHandler(async (req, res) => {
     const review = await cafeReview.findByIdAndDelete(req.params.id);
     if(!review) {
@@ -46,6 +74,7 @@ const deleteReview = asyncHandler(async (req, res) => {
 module.exports = {
     createReview,
     getReviewsByCafe,
+    updateReview,
     deleteReview,
     getCafes
 };

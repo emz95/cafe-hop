@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
+import UserProfileModal from '../components/UserProfileModal';
 
 // Mock leaderboard data
 /*
@@ -21,6 +22,7 @@ const MOCK_LEADERBOARD = [
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
     async function loadLeaderboard(){
@@ -37,8 +39,8 @@ const Leaderboard = () => {
         setLeaderboard(data)
         console.log(data)
        
-      } catch {
-
+      } catch (err) {
+        console.error('Failed to load leaderboard:', err);
       } finally {
         setLoading(false)
       }
@@ -81,11 +83,11 @@ const Leaderboard = () => {
         {!loading && leaderboard.length > 0 && (
           <div className="leaderboard-container">
             {leaderboard.map((user, index) => (
-              <div key={user.id} className={`leaderboard-item ${getRankClass(index + 1)} ${index % 2 === 0 ? 'even-row' : 'odd-row'}`}>
+              <div key={user._id || user.id} className={`leaderboard-item ${getRankClass(index + 1)} ${index % 2 === 0 ? 'even-row' : 'odd-row'}`}>
                 <div className="leaderboard-rank">
                   <span className="rank-badge">{getRankBadge(index + 1)}</span>
                 </div>
-                <div className="leaderboard-user-info">
+                <div className="leaderboard-user-info clickable" onClick={() => setSelectedUserId(user._id || user.id)}>
                   <ProfilePicture username={user.username} size="small" />
                   <div className="leaderboard-details">
                     <h3 className="leaderboard-username">{user.username}</h3>
@@ -102,6 +104,12 @@ const Leaderboard = () => {
           </div>
         )}
       </div>
+      {selectedUserId && (
+        <UserProfileModal 
+          userId={selectedUserId} 
+          onClose={() => setSelectedUserId(null)} 
+        />
+      )}
     </div>
   );
 };

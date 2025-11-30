@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { createReview, getReviewsByCafe, deleteReview } = require('../controllers/cafeReviewController');
+const { createReview, getReviewsByCafe, updateReview, deleteReview } = require('../controllers/cafeReviewController');
 
 const { protect } = require('../middleware/authMiddleware');
 const { getCafes } = require('../controllers/cafeController');
@@ -10,6 +10,7 @@ const router = express.Router();
 router.post('/', protect, createReview);
 router.get('/', protect, getCafes)
 router.get('/byCafe/:cafeId', protect, getReviewsByCafe);
+router.patch('/:id', protect, updateReview);
 router.delete('/:id', protect, deleteReview);
 
 module.exports = router; 

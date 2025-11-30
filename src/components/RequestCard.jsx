@@ -5,6 +5,7 @@ export const RequestCard = ({
   requests = [],
   onApprove,
   onReject,
+  onUserClick,
 }) => {
 
   if (!requests || requests.length === 0) {
@@ -18,7 +19,7 @@ export const RequestCard = ({
           <div className="request-header">
             <ProfilePicture username={req.username} size="small" />
             <div className="request-info">
-              <h4>{req.username}</h4>
+              <h4 className="clickable" onClick={() => onUserClick && onUserClick(req.userId)}>{req.username}</h4>
               <p className="cafe-name">{req.cafeName}</p>
               <p className="location-time">
                 📍 {req.location} • 📅 {req.date} • 🕐 {req.time}

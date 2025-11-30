@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
-
+import UserProfileModal from '../components/UserProfileModal';
 
 const MainScreen = () => {
   const navigate = useNavigate();
   const [timeFilter, setTimeFilter] = useState('all'); // 'all', '24h', 'week', 'month'
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearch, setActiveSearch] = useState(''); // The search term actually being used
   const [posts, setPosts] = useState([]);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const API_BASE = 'http://localhost:3000/api';
   const user = (() => {
@@ -30,11 +32,12 @@ const MainScreen = () => {
         setLoading(false);
         return;
       }
+    
     async function loadPosts() {
       try {
         setLoading(true)
         const params = new URLSearchParams()
-        const q = searchQuery.trim()
+        const q = activeSearch.trim()
         if (q) params.set('search', q)
 
         if (timeFilter && timeFilter !== 'all') {
@@ -49,16 +52,24 @@ const MainScreen = () => {
           method: "GET",
         });
 
-
-        if (!postsRes.ok) {
+        if (!res.ok) {
           throw new Error("Error fetching posts");
         }
+        const postData = await res.json();
+        setPosts(postData);
+
+        // Fetch join requests separately
+        const reqRes = await fetch(`${API_BASE}/joinRequests/getByRequester/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
         if (!reqRes.ok) {
           throw new Error("Error fetching join requests");
         }
-        const postData = await postsRes.json();
         const reqData = await reqRes.json();
-        setPosts(postData);
         setRequests(reqData);
 
       } catch (err) {
@@ -68,8 +79,23 @@ const MainScreen = () => {
       }
     }
     loadPosts();
-  }, [searchQuery, timeFilter]);
+  }, [activeSearch, timeFilter, userId, token]);
 
+
+  const handleSearch = () => {
+    setActiveSearch(searchQuery);
+  };
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setActiveSearch('');
+  };
 
   const getRequestsForPost = (postId) => requests.find((r) => r.post._id === postId);
 
@@ -128,25 +154,36 @@ const MainScreen = () => {
     return matchesSearch;
   });
 
+  function formatDate(isoString) {
+    const dt = new Date(isoString);
+  
+    const date = dt.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  
+    return `${date}`;
+  }
+  function formatTime(isoString) {
+    const dt = new Date(isoString);
+  
+    const time = dt.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  
+    return `${time}`;
+  }
+
   if (loading) return <p>Loading posts</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="main-screen">
       <Header />
       <div className="main-content">
         <div className="main-header">
-          <div>
-            <h2>Upcoming Cafe Trips</h2>
-          </div>
-          <div className="header-controls">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search cafes or locations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          <h2>Upcoming Cafe Trips</h2>
         </div>
         <div className="filter-buttons">
           <button
@@ -173,6 +210,31 @@ const MainScreen = () => {
           >
             Next Month
           </button>
+          <div className="search-controls" style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search cafes or locations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleSearchKeyPress}
+            />
+            <button 
+              className="btn btn-primary btn-small"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+            {(searchQuery || activeSearch) && (
+              <button 
+                className="btn btn-secondary btn-small"
+                onClick={handleClearSearch}
+                title="Clear search"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
         <button 
           className="create-trip-fab" 
@@ -189,7 +251,10 @@ const MainScreen = () => {
             <div key={post._id} className="cafe-trip-post">
               <div className="post-header">
                 <ProfilePicture username={post.author.username} size="small" />
-                <div className="post-user-info">
+                <div 
+                  className="post-user-info clickable" 
+                  onClick={() => setSelectedUserId(post.author._id)}
+                >
                   <h4>{post.author.username}</h4>
                 </div>
               </div>
@@ -215,30 +280,14 @@ const MainScreen = () => {
           ))}
         </div>
       </div>
+      {selectedUserId && (
+        <UserProfileModal 
+          userId={selectedUserId} 
+          onClose={() => setSelectedUserId(null)} 
+        />
+      )}
     </div>
   );
-  function formatDate(isoString) {
-    const dt = new Date(isoString);
-  
-    const date = dt.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-  
-    return `${date}`;
-  }
-  function formatTime(isoString) {
-    const dt = new Date(isoString);
-  
-    const time = dt.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  
-    return `${time}`;
-  }
-  
-  
 };
 
 export default MainScreen;

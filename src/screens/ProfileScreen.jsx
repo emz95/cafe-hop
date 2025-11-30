@@ -9,7 +9,6 @@ const ProfileScreen = () => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [pastEvents, setPastEvents] = useState(null)
-  const [profileImage, setProfileImage] = useState(null)
 
   useEffect(() => {
     async function loadUser() {
@@ -66,24 +65,61 @@ const ProfileScreen = () => {
       setLoading(false)
     } 
     init()
-  }, [user])
+  }, [user, token])
 
-  useEffect(() => {
-    const savedImage = localStorage.getItem('profileImage');
-    if (savedImage) {
-      setProfileImage(savedImage);
-    }
-  }, []);
-
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check file size (limit to 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB. Please choose a smaller image.');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const imageData = reader.result;
-        setProfileImage(imageData);
-        localStorage.setItem('profileImage', imageData);
+        
+        try {
+          console.log('Uploading profile picture...');
+          // Upload to backend
+          const res = await fetch('http://localhost:3000/api/users/me', {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ profilePictureUrl: imageData }),
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            console.error('Upload failed:', errorData);
+            throw new Error(errorData.message || 'Failed to upload profile picture');
+          }
+
+          const updatedUser = await res.json();
+          console.log('Profile picture updated:', updatedUser);
+          setUser(updatedUser);
+          alert('Profile picture updated successfully!');
+        } catch (err) {
+          console.error('Error uploading profile picture:', err);
+          alert(`Failed to upload profile picture: ${err.message}`);
+        }
       };
+      
+      reader.onerror = () => {
+        console.error('Error reading file');
+        alert('Failed to read image file');
+      };
+      
       reader.readAsDataURL(file);
     }
   };
@@ -112,7 +148,7 @@ const ProfileScreen = () => {
           />
           <ProfilePicture 
             username={user.firstName} 
-            imageUrl={profileImage}
+            imageUrl={user.profilePictureUrl}
             size="large" 
             editable={true}
             onEdit={handleEditClick}

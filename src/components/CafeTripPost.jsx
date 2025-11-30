@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import ReviewCard from './Button';
+import UserProfileModal from './UserProfileModal';
 import { useAuth } from '../contexts/AuthContext';
 
 
@@ -49,11 +50,23 @@ const CafeDetailScreen = () => {
   const [loading, setLoading] = useState(true);
   const {token} = useAuth()
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [editingReview, setEditingReview] = useState(null);
   const [newReview, setNewReview] = useState({
     rating: 5,
     text: '',
     images: []
   });
+  
+  // Get current user ID
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user'));
+    } catch {
+      return null;
+    }
+  })();
+  const currentUserId = user?._id;
 
   useEffect(() => {
     async function loadCafe() {
@@ -108,18 +121,16 @@ const CafeDetailScreen = () => {
     }
 
 
-  }, [cafeId]);
+  }, [cafeId, token]);
 
   const renderTeaRating = (rating) => {
     const fullTeas = Math.floor(rating);
-    const hasHalfTea = rating % 1 >= 0.5;
-    const emptyTeas = 5 - fullTeas - (hasHalfTea ? 1 : 0);
+    const emptyTeas = 5 - fullTeas;
     
     return (
       <div className="tea-rating-large">
         {'🍵'.repeat(fullTeas)}
-        {hasHalfTea && '🫖'}
-        {'⚪'.repeat(emptyTeas)}
+        {'🫖'.repeat(emptyTeas)}
       </div>
     );
   };
@@ -151,44 +162,121 @@ const CafeDetailScreen = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const imageUrls = files.map(file => URL.createObjectURL(file));
-    setNewReview(prev => ({
-      ...prev,
-      images: [...prev.images, ...imageUrls]
-    }));
+    
+    // Convert each file to base64
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setNewReview(prev => ({
+          ...prev,
+          images: [...prev.images, base64String]
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
-    const review = {
-      cafe: cafeId,
-      rating: newReview.rating,
-      description: newReview.text,
-      photos: newReview.images,
-    };
-
-    try{
-      const res = await fetch("http://localhost:3000/api/cafeReviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,   
-        },
-        body: JSON.stringify(review),
-      })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Failed to submit review");
+    
+    if (editingReview) {
+      // Update existing review
+      try {
+        const res = await fetch(`http://localhost:3000/api/cafeReviews/${editingReview._id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            rating: newReview.rating,
+            description: newReview.text,
+            photos: newReview.images,
+          }),
+        });
+        
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || "Failed to update review");
+        }
+        
+        const updatedReview = await res.json();
+        setReviews((prev) => prev.map(r => r._id === updatedReview._id ? updatedReview : r));
+        setNewReview({ rating: 5, text: "", images: [] });
+        setEditingReview(null);
+        setShowReviewForm(false);
+        alert('Review updated successfully!');
+      } catch (error) {
+        console.error("Error updating review:", error);
+        alert('Failed to update review');
       }
-      const savedReview = await res.json(); 
-      setReviews((prev) => [savedReview, ...prev]);
-      setNewReview({ rating: 5, text: "", images: [] });
-      setShowReviewForm(false);
+    } else {
+      // Create new review
+      const review = {
+        cafe: cafeId,
+        rating: newReview.rating,
+        description: newReview.text,
+        photos: newReview.images,
+      };
 
+      try{
+        const res = await fetch("http://localhost:3000/api/cafeReviews", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,   
+          },
+          body: JSON.stringify(review),
+        })
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || "Failed to submit review");
+        }
+        const savedReview = await res.json(); 
+        setReviews((prev) => [savedReview, ...prev]);
+        setNewReview({ rating: 5, text: "", images: [] });
+        setShowReviewForm(false);
+        alert('Review submitted successfully!');
+      } catch (error) {
+        console.error("Error submitting review:", error);
+        alert('Failed to submit review');
+      }
+    }
+  };
 
+  const handleEditReview = (review) => {
+    setEditingReview(review);
+    setNewReview({
+      rating: review.rating,
+      text: review.description,
+      images: review.photos || []
+    });
+    setShowReviewForm(true);
+  };
 
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm('Are you sure you want to delete this review?')) {
+      return;
+    }
+    
+    try {
+      const res = await fetch(`http://localhost:3000/api/cafeReviews/${reviewId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (!res.ok) {
+        throw new Error('Failed to delete review');
+      }
+      
+      setReviews((prev) => prev.filter(r => r._id !== reviewId));
+      alert('Review deleted successfully!');
     } catch (error) {
-      console.error("Error submitting review:", error);
+      console.error('Error deleting review:', error);
+      alert('Failed to delete review');
     }
   };
 
@@ -197,6 +285,12 @@ const CafeDetailScreen = () => {
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }));
+  };
+  
+  const handleCancelEdit = () => {
+    setEditingReview(null);
+    setNewReview({ rating: 5, text: "", images: [] });
+    setShowReviewForm(false);
   };
 
   return (
@@ -228,7 +322,13 @@ const CafeDetailScreen = () => {
             <h2 className="reviews-title">Reviews</h2>
             <button 
               className="btn btn-primary btn-medium"
-              onClick={() => setShowReviewForm(!showReviewForm)}
+              onClick={() => {
+                if (showReviewForm) {
+                  handleCancelEdit();
+                } else {
+                  setShowReviewForm(true);
+                }
+              }}
             >
               {showReviewForm ? 'Cancel' : 'Write a Review'}
             </button>
@@ -299,7 +399,7 @@ const CafeDetailScreen = () => {
               </div>
 
               <button type="submit" className="btn btn-primary btn-medium btn-full-width">
-                Submit Review
+                {editingReview ? 'Update Review' : 'Submit Review'}
               </button>
             </form>
           )}
@@ -309,12 +409,25 @@ const CafeDetailScreen = () => {
           ) : (
             <div className="reviews-list">
               {reviews.map(review => (
-                <ReviewCard key={review._id} review={review} />
+                <ReviewCard 
+                  key={review._id} 
+                  review={review} 
+                  onUserClick={setSelectedUserId}
+                  onEdit={handleEditReview}
+                  onDelete={handleDeleteReview}
+                  currentUserId={currentUserId}
+                />
               ))}
             </div>
           )}
         </div>
       </div>
+      {selectedUserId && (
+        <UserProfileModal 
+          userId={selectedUserId} 
+          onClose={() => setSelectedUserId(null)} 
+        />
+      )}
     </div>
   );
 };

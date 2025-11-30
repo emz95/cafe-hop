@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import logo from '../assets/CafeHopLogo.png';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -18,8 +19,9 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-container">
-        <div className="logo" onClick={() => navigate('/main')} style={{ cursor: 'pointer' }}>
-          <h1>☕ CafeHop</h1>
+        <div className="logo" onClick={() => navigate('/main')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src={logo} alt="CafeHop Logo" style={{ height: '80px', width: 'auto' }} />
+          <h1>CafeHop</h1>
         </div>
         <nav className="nav">
           {navItems.map(item => (

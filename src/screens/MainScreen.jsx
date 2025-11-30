@@ -1,16 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
+
 
 const MainScreen = () => {
   const navigate = useNavigate();
   const [timeFilter, setTimeFilter] = useState('all'); // 'all', '24h', 'week', 'month'
   const [searchQuery, setSearchQuery] = useState('');
   const [posts, setPosts] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem('token');
+
+  const API_BASE = 'http://localhost:3000/api';
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user'));
+    } catch {
+      return null;
+    }
+    })();
+    const userId = user?._id;
 
   useEffect(() => {
+      if(!userId || !token) {
+        setError('not logged in');
+        setLoading(false);
+        return;
+      }
     async function loadPosts() {
       try {
         setLoading(true)
@@ -30,12 +49,17 @@ const MainScreen = () => {
           method: "GET",
         });
 
-        if (!res.ok) {
+
+        if (!postsRes.ok) {
           throw new Error("Error fetching posts");
         }
-        const data = await res.json();
-        setPosts(data);
-        console.log(data);
+        if (!reqRes.ok) {
+          throw new Error("Error fetching join requests");
+        }
+        const postData = await postsRes.json();
+        const reqData = await reqRes.json();
+        setPosts(postData);
+        setRequests(reqData);
 
       } catch (err) {
         console.error(err);
@@ -46,30 +70,65 @@ const MainScreen = () => {
     loadPosts();
   }, [searchQuery, timeFilter]);
 
-  if (loading) return <p>Loading posts</p>;
 
-  const handleJoin = (postId, joinByRequest) => {
-    if (joinByRequest) {
-      alert('Request sent! Waiting for approval.');
-      setPosts(posts.map(post =>
-        post.id === postId ? { ...post, joined: true, requested: true } : post
-      ));
-    } else {
-      alert('Successfully joined the trip!');
-      setPosts(posts.map(post =>
-        post.id === postId ? { ...post, joined: true, requested: false } : post
-      ));
+  const getRequestsForPost = (postId) => requests.find((r) => r.post._id === postId);
+
+
+
+  const handleJoin = async(post) => {
+    try {
+    const res = await fetch(`${API_BASE}/joinRequests`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        post: post._id,
+        requester: userId,
+        poster: post.author._id
+      })
+    });
+    const data = await res.json();
+
+    setRequests((prev) => [...prev, {...data, post: {_id: post._id}}]);
+    alert("Join request sent successfully!");
+  }  catch (err) {
+    console.error("JOIN REQUEST ERROR:", err);
+    alert("Failed to send join request: " + err.message);
+    return;
+  }
     }
-  };
-
-  const getButtonText = (post) => {
-    if (post.joined && post.requested) return 'Requested';
-    if (post.joined) return 'Joined';
-    return post.joinByRequest ? 'Request to Join' : 'Join';
-  };
   
 
+    const getButtonText = (post) => {
+      // can't join your own trip
+      if (post.author?._id === userId) return 'Your Trip';
+      const req = getRequestsForPost(post._id);
+      if(req?.status === 'Pending') return 'Requested';
+      if(req?.status === 'Approved') return 'Joined';
+      return 'Request to Join';
+    };
+    const isButtonDisabled = (post) => {
+      if (post.author?._id === userId) return true;
   
+      const req = getRequestsForPost(post._id);
+      if (!req) return false;
+
+      return req.status === 'Pending' || req.status === 'Approved';
+    };
+  
+
+  const filteredPosts = posts.filter(post => {
+    // Search filter - add safety checks for undefined values
+    const cafeName = post.cafeName || '';
+    const location = post.location || '';
+    const matchesSearch = cafeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         location.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  });
+
+  if (loading) return <p>Loading posts</p>;
 
   return (
     <div className="main-screen">
@@ -100,19 +159,19 @@ const MainScreen = () => {
             className={`filter-btn ${timeFilter === '24h' ? 'active' : ''}`}
             onClick={() => setTimeFilter('24h')}
           >
-            Last 24 Hours
+            Next 24 Hours
           </button>
           <button
             className={`filter-btn ${timeFilter === 'week' ? 'active' : ''}`}
             onClick={() => setTimeFilter('week')}
           >
-            Last Week
+            Next Week
           </button>
           <button
             className={`filter-btn ${timeFilter === 'month' ? 'active' : ''}`}
             onClick={() => setTimeFilter('month')}
           >
-            Last Month
+            Next Month
           </button>
         </div>
         <button 
@@ -126,8 +185,8 @@ const MainScreen = () => {
           {posts.length === 0 && (
             <p className="empty-message">No trips found matching your search.</p>
           )}
-          {posts.map(post => (
-            <div key={post.id} className="cafe-trip-post">
+          {filteredPosts.map(post => (
+            <div key={post._id} className="cafe-trip-post">
               <div className="post-header">
                 <ProfilePicture username={post.author.username} size="small" />
                 <div className="post-user-info">
@@ -145,9 +204,9 @@ const MainScreen = () => {
               </div>
               <div className="post-actions">
                 <button 
-                  className={post.joined ? "btn btn-secondary btn-medium" : "btn btn-primary btn-medium"}
-                  onClick={() => handleJoin(post.id, post.joinByRequest)}
-                  disabled={post.joined}
+                  className={ getRequestsForPost(post._id)?.status === 'Approved' ? "btn btn-secondary btn-medium" : "btn btn-primary btn-medium"}
+                  onClick={() => handleJoin(post)}
+                  disabled={isButtonDisabled(post)}
                 >
                   {getButtonText(post)}
                 </button>

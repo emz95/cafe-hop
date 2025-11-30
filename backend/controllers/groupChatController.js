@@ -8,6 +8,7 @@ const getChatsForUser = asyncHandler(async (req, res) => {
     const userId = req.params.userId;
     const chats = await GroupChat.find({members: userId}).
     select('chatName post updatedAt').
+    sort({ createdAt: -1 }).
     lean();
 
     res.json(chats);

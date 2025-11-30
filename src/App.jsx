@@ -8,7 +8,6 @@ import ProfileScreen from './screens/ProfileScreen';
 import CafeTripPostScreen from './screens/CafeTripPostScreen';
 import RequestScreen from './screens/RequestScreen';
 import ChatScreen from './screens/ChatScreen';
-import FriendScreen from './screens/FriendScreen';
 import Leaderboard from './screens/Leaderboard';
 import CafeReviewScreen from './screens/CafeReviewScreen';
 import CafeDetailScreen from './components/CafeTripPost';
@@ -30,7 +29,6 @@ function App() {
           <Route path="/post" element={<CafeTripPostScreen />} />
           <Route path="/requests" element={<RequestScreen />} />
           <Route path="/chats" element={<ChatScreen />} />
-          <Route path="/friends" element={<FriendScreen />} />
           <Route path="/reviews" element={<CafeReviewScreen />} />
           <Route path="/reviews/:cafeId" element={<CafeDetailScreen />} />
         </Route>

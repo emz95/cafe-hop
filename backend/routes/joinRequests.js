@@ -9,6 +9,7 @@ const {
     rejectJoinRequest,
     getJoinRequestsForPost,
     getJoinRequestsForPoster,
+    getAllJoinRequestsForRequester,
     getJoinRequestsForRequester
 } = require('../controllers/joinRequestController');
 
@@ -24,6 +25,8 @@ router.post('/:id/reject', protect, rejectJoinRequest);
 router.get('/getByPost/:postId', protect, getJoinRequestsForPost);
 
 router.get('/getByPoster/:posterId', protect, getJoinRequestsForPoster);
+
+router.get('/getAllByRequester/:requesterId', protect, getAllJoinRequestsForRequester);
 
 router.get('/getByRequester/:requesterId', protect, getJoinRequestsForRequester);
 module.exports = router

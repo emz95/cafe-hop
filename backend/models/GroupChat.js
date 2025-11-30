@@ -18,6 +18,7 @@ const groupChatSchema = new Schema({
         type: Types.ObjectId, 
         ref: "Post",
         required: true, 
+
         unique: true
     },
     postAuthor: {
@@ -25,7 +26,10 @@ const groupChatSchema = new Schema({
         ref: "User",
         required: true,
     },
-
-})
+},
+    {
+    timestamps: true,           
+    }
+);
 
 module.exports = model('GroupChat', groupChatSchema);

@@ -9,6 +9,7 @@ const LoginScreen = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
+
   });
 
   const [error, setError] = useState(null)
@@ -30,7 +31,8 @@ const LoginScreen = () => {
       if (res.ok) {
         const data = await res.json()
         console.log("LOGIN SUCCESS:", data) 
-        login(data.token)
+        const { token, ...userData } = data;
+        login(token, userData);
         navigate('/main');
       } else {
         const err = await res.json()

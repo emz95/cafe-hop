@@ -8,7 +8,6 @@ const Header = () => {
   const { logout } = useAuth();
 
   const navItems = [
-    { id: 'friends', label: 'Friends', path: '/friends' },
     { id: 'chats', label: 'Chats', path: '/chats' },
     { id: 'requests', label: 'Requests', path: '/requests' },
     { id: 'reviews', label: 'Reviews', path: '/reviews' },

@@ -25,7 +25,7 @@ app.use('/api/posts', postsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/joinRequests', joinRequestsRouter);
 app.use('/api/messages', messageRouter);
-app.use('/api/chats', chatRouter);
+app.use('/api/groupchats', chatRouter);
 app.use('/api/cafes', cafeRouter); 
 app.use('/api/cafeReviews', cafeReviews);
 

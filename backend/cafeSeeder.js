@@ -51,19 +51,10 @@ const cafes = [
     { name: 'Literati Cafe' },
   ];
   
-async function run() {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        await Cafe.deleteMany({}); 
-        await Cafe.insertMany(cafes); 
-        console.log('cafes seeded'); 
-    }
-    catch (error) {
-        console.error(error); 
-    }
-    finally {
-        await mongoose.disconnect(); 
-    }
-}
-
-run(); 
+  async function seedCafes() {
+    await Cafe.deleteMany({});
+    await Cafe.insertMany(cafes);
+    return { count: cafes.length };
+  }
+  
+  module.exports = seedCafes;

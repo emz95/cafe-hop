@@ -30,10 +30,10 @@ const SetupScreen = () => {
         body: JSON.stringify(formData)
       })
       if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data));
-        login(data.token);
+        const data = await res.json()
+        console.log("LOGIN SUCCESS:", data) 
+        const { token, ...userData } = data;
+        login(token, userData);
         navigate('/main');
       } else {
         const err = await res.json();

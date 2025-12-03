@@ -35,4 +35,35 @@ app.get('/testing', (req, res) => {
 });
 
 
+
+  
+app.post("/test/reset", async (req, res) => {
+    try {
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+        await collections[key].deleteMany({});
+    }
+    res.status(200).json({ message: "Database reset" });
+    } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+    }
+});
+
+const seedCafes = require('./cafeSeeder');
+
+app.post('/test/seed-cafes', async (req, res) => {
+  try {
+    const result = await seedCafes();
+    res.json({
+      message: "Cafes seeded",
+      count: result.count,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 module.exports = app; 

@@ -23,7 +23,7 @@ copy env file sent in the email (Group #)
 
 4. **Start the backend server**
 ```bash
-cd cafe-hop/backend
+cd backend (must already be inside cafe-hop folder) 
 npm start
 ```
 

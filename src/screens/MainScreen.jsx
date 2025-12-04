@@ -4,19 +4,30 @@ import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
 import UserProfileModal from '../components/UserProfileModal';
 
+/**
+ * MainScreen - Displays all cafe trips with search and filter functionality
+ * Users can browse trips, search by cafe/location, filter by time, and join trips
+ */
 const MainScreen = () => {
   const navigate = useNavigate();
-  const [timeFilter, setTimeFilter] = useState('all'); // 'all', '24h', 'week', 'month'
+  // Filter trips by time period (all, 24h, week, month)
+  const [timeFilter, setTimeFilter] = useState('all');
+  // Text input for search (updates as user types)
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSearch, setActiveSearch] = useState(''); // The search term actually being used
+  // Actual search term being used (only updates when user presses Enter or clicks search)
+  const [activeSearch, setActiveSearch] = useState('');
+  // List of cafe trips from backend
   const [posts, setPosts] = useState([]);
+  // User's join requests to track which trips they've requested
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
+  // For showing user profile modal when clicking on profile pictures
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   const API_BASE = 'http://localhost:3000/api';
+  // Get current user from localStorage
   const user = (() => {
     try {
       return JSON.parse(localStorage.getItem('user'));
@@ -26,7 +37,9 @@ const MainScreen = () => {
     })();
     const userId = user?._id;
 
+  // Fetch posts whenever search or filter changes
   useEffect(() => {
+      // Check if user is authenticated
       if(!userId || !token) {
         setError('not logged in');
         setLoading(false);
@@ -36,6 +49,7 @@ const MainScreen = () => {
     async function loadPosts() {
       try {
         setLoading(true)
+        // Build query parameters for search and filter
         const params = new URLSearchParams()
         const q = activeSearch.trim()
         if (q) params.set('search', q)
@@ -44,6 +58,7 @@ const MainScreen = () => {
           params.set('timeFilter', timeFilter)
         }
 
+        // Construct URL with query params
         const url = params.toString()
         ? `http://localhost:3000/api/posts?${params.toString()}`
         : `http://localhost:3000/api/posts`
@@ -58,7 +73,7 @@ const MainScreen = () => {
         const postData = await res.json();
         setPosts(postData);
 
-        // Fetch join requests separately
+        // Also fetch user's join requests to show which trips they've already requested
         const reqRes = await fetch(`${API_BASE}/joinRequests/getByRequester/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,

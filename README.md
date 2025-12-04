@@ -31,6 +31,8 @@ npm start
 6. **Start the frontend server**
 
 ```bash
+Open another terminal
+cd cafe-hop 
 npm run dev
 ```
 

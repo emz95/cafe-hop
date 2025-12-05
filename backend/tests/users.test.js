@@ -80,6 +80,8 @@ describe("POST /api/users", () => {
   })
 })
 
+// userd AI as reference, prompt at bottom of file
+
 describe("POST /api/users/login", () => {
     test("should login a user and return 201 with token", async () => {
         const fakeUser = {
@@ -202,3 +204,11 @@ describe("DELETE /api/users/me", () => {
     })
 })
   
+
+/*
+  
+*/
+
+/*
+  Response:
+*/

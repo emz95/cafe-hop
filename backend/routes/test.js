@@ -1,3 +1,4 @@
+
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
@@ -5,6 +6,8 @@ const router = express.Router();
 const seedCafes = require('../cafeSeeder');
 const seedZootopiaData = require('../zootopiaSeeder');
 
+
+// AI Generated, prompts in cypress/e2e/join_group_and_chat.cy.js 
 // Reset database
 router.post('/reset', async (req, res) => {
   try {
@@ -18,6 +21,7 @@ router.post('/reset', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Seed cafes
 router.post('/seed-cafes', async (req, res) => {

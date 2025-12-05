@@ -1,5 +1,5 @@
 // cypress/e2e/cafe_reviews.cy.js
-
+// AI Generated, prompts in cypress/e2e/join_group_and_chat.cy.js 
 describe('User leaves a cafe review that becomes visible to others', () => {
     const API = 'http://localhost:3000/api';
   

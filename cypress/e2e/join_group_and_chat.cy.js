@@ -1,3 +1,4 @@
+// AI Generated, prompts in bottom of file
 describe('Guest joins group and sends message', () => {
     const API = 'http://localhost:3000/api';
   
@@ -138,3 +139,41 @@ cy.contains('button', 'Accept').first().click();
     });
   });
   
+
+  /*
+  Prompts: 
+  1. You are a software engineer tasked with writing 2 end to end tests to test our project. 
+    Our project currently has login, sign in, creating a post, viewing posts and filtering, sending request to join a group (from post), approving people's join requests, 
+    sending chat messages to an accepted group, and writing reviews for cafes. Give me your plan for the 2 tests.
+
+  2. cypress is installed. what kind of files would u need to complete writing the first test of Test 1 – 
+   “New user joins a group and sends first chat message” Keep the flow simpler
+
+  3. i currently do not have a way to reset accounts. what would be the best way to reset our database if we are using mongodb, mongoose, and express
+
+  4. write Test 1 – “New user joins a group and sends first chat message” Keep the flow simpler. you already have /test/reset.
+    Added files relevant. What other files do you need. 
+  
+  5. Where do I need to add/change cypress files. 
+
+
+  6. What about the config
+  what about the config // cypress.config.js (ESM style, for "type": "module" projects) import { defineConfig } from 'cypress'; export default defineConfig({ e2e: { baseUrl: 'http://localhost:5174', // no setupNodeEvents needed yet }, });
+
+  7. Sent picture of register screen. This is register. Rewrite test to account for users getting reset. 
+
+  8. similarly write cypress test to test for this Test 2 – “User leaves a cafe review that becomes visible to others”
+
+  9. I am not using localstorage. 
+
+  had to change variables to match and test user emails to end in @ucla.edu to match
+
+  10. debugging error submitting rating
+    CypressError Timed out retrying after 4000ms: cy.find() failed because it requires a DOM element or document. No elements in the current DOM matched your query: > cy.contains(Rating).parent()
+
+  11. Pasted in UI file again that contained rating
+
+  */
+
+
+ 

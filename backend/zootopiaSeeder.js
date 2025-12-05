@@ -9,7 +9,7 @@ const CafeReview = require('./models/CafeReview');
 const seedCafes = require('./cafeSeeder');
 
 // Zootopia-themed user data
-// Generated with AI, prompts on bottom of file
+// Whole file generated with AI, prompts on bottom of file
 const zootopiaUsers = [
   {
     username: 'jhopps',
@@ -337,14 +337,13 @@ module.exports = seedZootopiaData;
 // Whole file generated with AI
 /*
 Prompts given:
-1. "write a script that repopulates our app with fake zootopia themed data. create 5 users with posts and also leave reviews on cafes that are generated in the /test/seed-cafes route"
+1. "write a script that repopulates our app with fake zootopia themed data. 
+  create 5 users with posts and also leave reviews on cafes that are generated in the /test/seed-cafes route.
+  do not have it reset data on users/posts/reviews that already exist.
 
 2. "make sure the trips are set for a future date within the month"
 
 3. "for the trip posts use zootopia themed names"
 
-
-5. "the description for the posts should not be a review. instead it should invite people to go on a trip with them or add additional details etc"
-
-6. "yeah dont have it reset any other data" (referring to not resetting existing users/posts/reviews when seeding)
+4. "the description for the posts should not be a review. instead it should invite people to go on a trip with them or add additional details etc"
 */

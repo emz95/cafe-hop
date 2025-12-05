@@ -14,6 +14,4 @@ router.get('/:id', protect, getUserById)
 router.post('/refresh', refresh)
 
 
-
-
 module.exports = router;

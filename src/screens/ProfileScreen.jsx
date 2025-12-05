@@ -3,14 +3,21 @@ import Header from '../components/Header';
 import ProfilePicture from '../components/ProfilePicture';
 import {useAuth} from '../contexts/AuthContext'
 
-
+/**
+ * ProfileScreen - Displays user profile with picture, stats, and past trips
+ * Allows users to upload/change their profile picture
+ */
 const ProfileScreen = () => {
   const {token} = useAuth()
+  // Store user data from backend
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  // Store user's past cafe trips
   const [pastEvents, setPastEvents] = useState(null)
 
+  // Load user data and their posts when component mounts
   useEffect(() => {
+    // Fetch current user's profile info
     async function loadUser() {
       try {
         const res = await fetch("http://localhost:3000/api/users/me", {
@@ -36,6 +43,7 @@ const ProfileScreen = () => {
       }
     }
 
+    // Fetch user's past cafe trips
     async function loadPosts() {
       try {
         const res = await fetch(`http://localhost:3000/api/users/me/posts`, {
@@ -67,28 +75,35 @@ const ProfileScreen = () => {
     init()
   }, [user, token])
 
+  /*
+   * AI GENERATED SECTION - Image Upload Handler
+   * Prompt: "Create a function to handle profile picture upload in React.
+   * Convert the image to base64, validate file size (max 5MB) and type,
+   * then send to backend API. Show user-friendly error messages."
+   */
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Check file size (limit to 5MB)
+      // Validate file size (max 5MB to prevent server overload)
       if (file.size > 5 * 1024 * 1024) {
         alert('Image size must be less than 5MB. Please choose a smaller image.');
         return;
       }
 
-      // Check file type
+      // Validate file type (only images allowed)
       if (!file.type.startsWith('image/')) {
         alert('Please select a valid image file.');
         return;
       }
 
+      // FileReader converts image to base64 string for backend storage
       const reader = new FileReader();
       reader.onloadend = async () => {
         const imageData = reader.result;
         
         try {
           console.log('Uploading profile picture...');
-          // Upload to backend
+          // Send base64 image data to backend via PATCH request
           const res = await fetch('http://localhost:3000/api/users/me', {
             method: 'PATCH',
             credentials: 'include',
@@ -102,11 +117,12 @@ const ProfileScreen = () => {
           if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
             console.error('Upload failed:', errorData);
-            throw new Error(errorData.message || 'Failed to upload profile picture');
+            throw new Error('Image size too big. Please choose an image under 5MB.');
           }
 
           const updatedUser = await res.json();
           console.log('Profile picture updated:', updatedUser);
+          // Update local state with new user data (includes new profile pic)
           setUser(updatedUser);
           alert('Profile picture updated successfully!');
         } catch (err) {
@@ -114,6 +130,7 @@ const ProfileScreen = () => {
           alert(`Failed to upload profile picture: ${err.message}`);
         }
       };
+      /* END AI GENERATED SECTION */
       
       reader.onerror = () => {
         console.error('Error reading file');

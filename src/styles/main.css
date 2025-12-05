@@ -1,3 +1,13 @@
+/*
+ * AI GENERATED SECTION
+ * Prompt: "Alter the CSS file for our cafe social app CafeHop.
+ * Use a matcha green color theme as the primary color to give it a warm, cafe aesthetic.
+ * Include a cohesive color palette using CSS variables.
+ * The design should feel inviting and modern, suitable for a social platform where students meet at cafes."
+ * 
+ * This file establishes the global styling foundation for the web app.
+ */
+
 @import './colors.css';
 
 /* Global styles */

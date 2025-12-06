@@ -17,7 +17,7 @@ const SetupScreen = () => {
 
   const [error, setError] = useState(null)
 
-  async function handleSubmit (e){
+  async function handleSubmit (e){ //Partially AI Generated, Prompt and Reference at bottom of page
     e.preventDefault();
     setError(null)
     try {
@@ -115,3 +115,63 @@ const SetupScreen = () => {
 };
 
 export default SetupScreen;
+
+/*
+
+Prompt: example of fetch function to call backend to login after submitting a form
+
+
+Reference:
+
+✅ Basic Login Form + Fetch Example (Vanilla JS)
+
+HTML
+
+<form id="loginForm">
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button type="submit">Login</button>
+</form>
+
+<div id="message"></div>
+
+
+JavaScript
+
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+  e.preventDefault(); // Prevent page refresh
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Backend returned an error
+      document.getElementById("message").innerText = data.message || "Login failed";
+      return;
+    }
+
+    // Successful login
+    document.getElementById("message").innerText = "Login successful!";
+    console.log("Token:", data.token); // Example: store token
+
+    // Optional: redirect to dashboard
+    // window.location.href = "/dashboard";
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("message").innerText = "Network error";
+  }
+});
+
+
+*/

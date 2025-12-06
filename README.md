@@ -69,7 +69,7 @@ Running tests resets all data in database.
 
 This sequence diagram models the interaction flow when users manage cafe trip join requests. User 1 creates a cafe trip post, and User 2 requests to join that trip. The diagram shows two alternative paths: User 1 can either approve the join request (which triggers the creation of a group chat message) or reject the join request. This illustrates one of the core social interaction workflows of CafeHop, where trip creators have control over who joins their cafe trips.
 
-![Sequence Diagram]( add img here, do link to img lol)
+![[Sequence Diagram](https://media.discordapp.net/attachments/1439337055682298065/1446738392460038225/Screenshot_2025-12-05_at_9.41.48_PM.png?ex=6935139f&is=6933c21f&hm=14b3e63ee7ca736af3b90f587e8b11e9cbdc42ce0af26b5ac4549e58732c8ad5&=&format=webp&quality=lossless&width=1790&height=1188)]( add img here, do link to img lol)
 
 ### Entity Relationship Diagram
 

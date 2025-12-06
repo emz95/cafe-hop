@@ -2,7 +2,7 @@ const {Schema, model, Types} = require("mongoose");
 
 
 const joinRequestSchema = new Schema({
-    requester: {
+    requester: { //user who has sent join request to a post 
         type: Types.ObjectId, 
         ref: "User", 
         required: true
@@ -19,7 +19,7 @@ const joinRequestSchema = new Schema({
         enum: ["Pending", "Approved", "Rejected"],
         default: "Pending"
     },
-    poster: {
+    poster: { //person receiving the incoming join requests
         type: Types.ObjectId, 
         ref: "User", 
         required: true

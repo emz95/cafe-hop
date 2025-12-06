@@ -97,6 +97,8 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(200).json(user)
 })
 
+
+//for when user updates bio or profile 
 const updateUser = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user.id, req.body, {
         new: true,

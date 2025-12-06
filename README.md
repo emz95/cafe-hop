@@ -57,7 +57,9 @@ npm test
 **End to End Tests with Cypress**
 ```bash
 npx cypress run
-Note: if this command is run, curl -X POST http://localhost:3000/test/seed-zootopia must be subsequently run to restore reset cafe data
+Note: if the above command is run,
+curl -X POST http://localhost:3000/test/seed-zootopia
+must be subsequently run to restore reset cafe data
 ```
 Running tests resets all data in database.
 

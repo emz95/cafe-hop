@@ -5,8 +5,15 @@ import ProfilePicture from '../components/ProfilePicture';
 import UserProfileModal from '../components/UserProfileModal';
 
 /**
- * MainScreen - Displays all cafe trips with search and filter functionality
- * Users can browse trips, search by cafe/location, filter by time, and join trips
+ * MainScreen - all code pertaining to the search filters and time filters for cafe trips
+ * was AI generated with prompt:
+ * "Create React components for the main screen that fetch and display
+ * the list of cafe trips from the backend API, where the user can then view all trips, or
+ * use a search bar functionality to filter trips through 
+ * text input
+ *  Add buttons to filter trips by time in which they took place 
+ * within next 24 hours, next week, next month
+ *
  */
 const MainScreen = () => {
   const navigate = useNavigate();

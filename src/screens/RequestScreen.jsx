@@ -58,12 +58,14 @@ const RequestScreen = () => {
         setError(null);
 
         const [posterRequests, requesterRequests] = await Promise.all([
+          //get all join requests sent to a particular poster
           fetch(`${API_BASE}/joinRequests/getByPoster/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
           }),
+          //get all join requests made by a particular requester
           fetch(`${API_BASE}/joinRequests/getByRequester/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -75,7 +77,8 @@ const RequestScreen = () => {
         console.log('posterRequests status:', posterRequests.status);
         console.log('requesterRequests status:', requesterRequests.status);
 
-        // Handle pending requests
+        // AI generated handle pending requests errors with prompt: 
+        // "augment the code to handle unauthorized responses by setting an error message"
         let pendingData = [];
         if (posterRequests.ok) {
           pendingData = await posterRequests.json();
@@ -88,7 +91,8 @@ const RequestScreen = () => {
           console.warn('Failed to fetch pending requests, using empty array');
         }
 
-        // Handle sent requests
+        // // AI generated handle sent requests errors with prompt: 
+        // "augment the code to handle unauthorized responses by setting an error message"
         let sentData = [];
         if (requesterRequests.ok) {
           sentData = await requesterRequests.json();

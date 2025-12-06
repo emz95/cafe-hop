@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const CafeTripPostScreen = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();   // backend uses req.user from token
+  const { token } = useAuth();   // get auth token from context? note need to ask emma about this
 
   const [cafeName, setCafeName] = useState('');
   const [location, setLocation] = useState('');
@@ -35,7 +35,7 @@ const CafeTripPostScreen = () => {
           description,
           date: dateTime.toISOString(),
           location,
-          isOpenToJoin: false,      // always requires approval
+          isOpenToJoin: false,      // always requires approval, feature unfortunately cut 
         }),
       });
 
@@ -44,7 +44,6 @@ const CafeTripPostScreen = () => {
         throw new Error(err.message || 'Failed to create post');
       }
 
-      // const createdPost = await res.json(); // use if you want to go to the post detail later
       navigate('/main');
     } catch (err) {
       setError(err.message);

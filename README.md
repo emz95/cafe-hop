@@ -49,10 +49,18 @@ npm run dev
 7. **Navigate to [http://localhost:5174/](http://localhost:5174/)**
 
 ### How To Test
-**Cucumber**
+The backend server must be running.
+
+**Jest**
 ```bash
 cd backend
 npm test
+```
+
+**Cucumber**
+```bash
+cd backend
+npm run test:cucumber
 ```
 **End to End Tests with Cypress**
 ```bash

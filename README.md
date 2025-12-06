@@ -69,7 +69,7 @@ Running tests resets all data in database.
 
 This sequence diagram models the interaction flow when users manage cafe trip join requests. User 1 creates a cafe trip post, and User 2 requests to join that trip. The diagram shows two alternative paths: User 1 can either approve the join request (which triggers the creation of a group chat message) or reject the join request. This illustrates one of the core social interaction workflows of CafeHop, where trip creators have control over who joins their cafe trips.
 
-![[Sequence Diagram](https://media.discordapp.net/attachments/1439337055682298065/1446738392460038225/Screenshot_2025-12-05_at_9.41.48_PM.png?ex=6935139f&is=6933c21f&hm=14b3e63ee7ca736af3b90f587e8b11e9cbdc42ce0af26b5ac4549e58732c8ad5&=&format=webp&quality=lossless&width=1790&height=1188)]( add img here, do link to img lol)
+![[[Sequence Diagram](https://media.discordapp.net/attachments/1439337055682298065/1446738256308731976/Screenshot_2025-12-05_at_9.41.02_PM.png?ex=6935137f&is=6933c1ff&hm=9edb3da190618ce1e85379efcd7c18bd1973d2131be22c094f4b5c284055dd22&=&format=webp&quality=lossless&width=2330&height=1184)]]( add img here, do link to img lol)
 
 ### Entity Relationship Diagram
 
@@ -82,7 +82,7 @@ This ERD models how data is stored in our MongoDB database. The database stores 
 
 The diagram uses crow's foot notation to indicate cardinality: "1" for one-to-one, "N" for one-to-many, and "M" for many-to-many relationships.
 
-![Entity Relationship Diagram]( add img here)
+![[Entity Relationship Diagram](https://media.discordapp.net/attachments/1439337055682298065/1446738392460038225/Screenshot_2025-12-05_at_9.41.48_PM.png?ex=6935139f&is=6933c21f&hm=14b3e63ee7ca736af3b90f587e8b11e9cbdc42ce0af26b5ac4549e58732c8ad5&=&format=webp&quality=lossless&width=1790&height=1188)]( add img here)
 
 
    

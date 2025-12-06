@@ -80,9 +80,9 @@ describe("POST /api/users", () => {
   })
 })
 
-// userd AI as reference, prompt at bottom of file
 
-describe("POST /api/users/login", () => {
+describe("POST /api/users/login", () => { // mostly AI generated function, use AI as reference but ended up being really similar, prompt at bottom of file
+
     test("should login a user and return 201 with token", async () => {
         const fakeUser = {
             _id: "123",
@@ -100,7 +100,7 @@ describe("POST /api/users/login", () => {
                 email: "test@test.com",
                 password: "pass"
             })
-        expect(User.findOne).toHaveBeenCalledWith({email: "test@test.com"})
+        expect(User.findOne).toHaveBeenCalledWith({email: "test@test.com"}) 
         expect(bcrypt.compare).toHaveBeenCalledWith("pass", "hashed-pass")
         expect(res.statusCode).toBe(201)
         expect(res.body).toEqual({
@@ -206,9 +206,135 @@ describe("DELETE /api/users/me", () => {
   
 
 /*
-  
+  how would i use jest to mock a login function that uses jwt, bcrypt, and mongoose
 */
 
 /*
   Response:
+
+  ChatGPT said:
+
+Below is a clear, practical pattern for mocking JWT, bcrypt, and Mongoose when unit-testing a login function with Jest. This approach avoids hitting the database, avoids real hashing/verification, and returns predictable values.
+
+✅ Example Login Function (the target of our test)
+
+Suppose you have something like this:
+
+// authService.js
+const User = require('./models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+async function login(email, password) {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not found");
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid credentials");
+
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+  return { token, user };
+}
+
+module.exports = { login };
+
+✅ How to Mock These Dependencies in Jest
+
+Jest can mock the modules at the top of the file using jest.mock().
+
+1. Mocking bcrypt
+jest.mock('bcryptjs', () => ({
+  compare: jest.fn(),
+}));
+
+2. Mocking jsonwebtoken
+jest.mock('jsonwebtoken', () => ({
+  sign: jest.fn(),
+}));
+
+3. Mocking a Mongoose Model
+
+For a model like User.findOne, mock its functions:
+
+jest.mock('./models/User', () => ({
+  findOne: jest.fn(),
+}));
+
+✅ Full Test Example
+// authService.test.js
+const { login } = require('./authService');
+const User = require('./models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+jest.mock('./models/User');
+jest.mock('bcryptjs');
+jest.mock('jsonwebtoken');
+
+describe('login', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('logs in a user with correct credentials', async () => {
+    // Mock user returned from DB
+    const mockUser = {
+      _id: '123',
+      email: 'test@example.com',
+      password: 'hashedPassword',
+    };
+    User.findOne.mockResolvedValue(mockUser);
+
+    // Mock bcrypt.compare result
+    bcrypt.compare.mockResolvedValue(true);
+
+    // Mock jwt.sign return
+    jwt.sign.mockReturnValue('fake-jwt-token');
+
+    const result = await login('test@example.com', 'password123');
+
+    expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
+    expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword');
+    expect(jwt.sign).toHaveBeenCalledWith({ userId: '123' }, process.env.JWT_SECRET);
+
+    expect(result).toEqual({
+      token: 'fake-jwt-token',
+      user: mockUser,
+    });
+  });
+
+  it('throws when user does not exist', async () => {
+    User.findOne.mockResolvedValue(null);
+
+    await expect(login('x@y.com', 'pass'))
+      .rejects
+      .toThrow('User not found');
+  });
+
+  it('throws when password is wrong', async () => {
+    User.findOne.mockResolvedValue({ password: 'storedHash' });
+    bcrypt.compare.mockResolvedValue(false);
+
+    await expect(login('x@y.com', 'wrongpass'))
+      .rejects
+      .toThrow('Invalid credentials');
+  });
+});
+
+✅ Important Notes
+✔ You do not need to mock Mongoose connection
+
+Mocking the model functions (findOne, create, etc.) is enough.
+
+✔ Always use mockResolvedValue for async functions
+
+Mongoose queries & bcrypt.compare return promises.
+
+✔ Return a simple string for the JWT
+
+The real signing logic isn't needed for unit tests.
+
+Want help adapting this to your project's structure?
+
+Send me your login function or folder layout and I’ll generate a tailored test file.
 */

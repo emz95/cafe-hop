@@ -1,5 +1,13 @@
 ## Welcome to CafeHop! The country's premiere app for UCLA students to meet new friends and partake in the wonderful tradition of discovering delicious pastries and refreshing drinks. 
 
+**Group 23** | **TA:** Ziyue Dang
+
+### Prerequisites
+
+- **Node.js** (v16 or higher)
+- **MongoDB** (local installation or MongoDB Atlas account)
+- **npm** or **yarn**
+  
 ### How To Run 
 
 1. **Clone the repository** 
@@ -41,12 +49,16 @@ npm run dev
 7. **Navigate to [http://localhost:5174/](http://localhost:5174/)**
 
 ### How To Test
+**Cucumber**
+```bash
+cd backend
+npm test
+```
 **End to End Tests with Cypress**
 ```bash
 npx cypress run
 ```
 Running tests resets all data in database.
-   
 
 
    

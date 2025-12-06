@@ -51,12 +51,6 @@ npm run dev
 ### How To Test
 The backend server must be running.
 
-**Jest**
-```bash
-cd backend
-npm test
-```
-
 **Cucumber**
 ```bash
 cd backend

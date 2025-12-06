@@ -17,7 +17,8 @@ npm install
 
 3. **Set up environment variables**
   ```bash
-copy env file sent in the email (Group #)
+Create .env file in the backend folder
+copy env file sent in the email (Group #23)
 ```
 
 

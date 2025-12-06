@@ -63,5 +63,26 @@ must be subsequently run to restore reset cafe data
 ```
 Running tests resets all data in database.
 
+## Design Diagrams
+
+### Sequence Diagram
+
+This sequence diagram models the interaction flow when users manage cafe trip join requests. User 1 creates a cafe trip post, and User 2 requests to join that trip. The diagram shows two alternative paths: User 1 can either approve the join request (which triggers the creation of a group chat message) or reject the join request. This illustrates one of the core social interaction workflows of CafeHop, where trip creators have control over who joins their cafe trips.
+
+![Sequence Diagram]( add img here, do link to img lol)
+
+### Entity Relationship Diagram
+
+This ERD models how data is stored in our MongoDB database. The database stores users, cafe trip posts, join requests, cafe reviews, messages, and group chats. Key relationships include:
+- Each **User** can create multiple **Posts** (cafe trips) and **Reviews**
+- Each **Post** can have multiple **JoinRequests** from different users
+- Each **User** can be a member of multiple **GroupChats**, and each chat contains multiple **Messages**
+- **CafeReviews** link users to specific cafes with ratings and descriptions
+- The **has** relationship connects users to their authored posts, showing ownership
+
+The diagram uses crow's foot notation to indicate cardinality: "1" for one-to-one, "N" for one-to-many, and "M" for many-to-many relationships.
+
+![Entity Relationship Diagram]( add img here)
+
 
    

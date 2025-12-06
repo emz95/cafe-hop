@@ -175,7 +175,7 @@ const ProfileScreen = () => {
             <p className="profile-username">@{user.username}</p>
             <p className="profile-contact">Email: {user.email}</p>
             <p className="profile-contact">Mobile: {user.number}</p>
-            <p className="profile-bio">Bio: {user.bio}</p>
+            <p className="profile-bio"> {user.bio}</p>
           </div>
         </div>
 

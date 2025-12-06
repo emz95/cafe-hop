@@ -58,16 +58,22 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    const {email, password} = req.body
-    const user = await User.findOne({email})
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-    if(user && (await bcrypt.compare(password, user.password))){
-        return sendAuthRes(user, res, 200)
-    } else {
-        res.status(400)
-        throw new Error('Invalid credentials')
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
-})
+  
+    const isMatch = await bcrypt.compare(password, user.password);
+  
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+  
+    return sendAuthRes(user, res, 200);
+  });
+  
 
 const userInfo = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id).select('-password')

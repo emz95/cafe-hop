@@ -376,7 +376,7 @@ const CafeDetailScreen = () => {
                     style={{ display: 'none' }}
                   />
                   <label htmlFor="image-upload" className="upload-button">
-                    📷 Upload Images
+                    📷 Upload Images (No larger than 5MB)
                   </label>
                   
                   {newReview.images.length > 0 && (

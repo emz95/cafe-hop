@@ -133,27 +133,27 @@ const getUserPosts = asyncHandler( async (req, res)=> {
 const getLeaderboard = asyncHandler( async (req, res) => {
     const counts = new Map()
 
-    const addCount = (userId) => {
+    const addCount = (userId) => { 
         const key = userId.toString()
-        counts.set(key, (counts.get(key) || 0) + 1)
+        counts.set(key, (counts.get(key) || 0) + 1) // each post or join adds one trip count
     }
 
     const posts = await Post.find({}, 'author').lean()
-    posts.forEach(post => {
+    posts.forEach(post => { // each post adds one trip count
         addCount(post.author)
     })
 
     const joins = await JoinRequest.find({status: 'accepted'}, 'user').lean()
-    joins.forEach(join => {
+    joins.forEach(join => { // each accepted join request adds one trip count
         addCount(join.user)
     })
 
-    const userIds = [...counts.keys()]
+    const userIds = [...counts.keys()] // array of user IDs
 
     const users = await User.find({_id: {$in: userIds}}, 'username').lean()
 
     const leaderboard = userIds.map(id => {
-        const user = users.find(u => u._id.toString() === id)
+        const user = users.find(u => u._id.toString() === id) // find user details 
         return {
             _id: id,
             username: user.username,

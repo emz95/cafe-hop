@@ -139,7 +139,7 @@ const RequestScreen = () => {
       setPendingRequests((prev) =>
         prev.filter((req) => req._id !== data.joinRequest._id)
       );
-      navigate('/chats');
+      // navigate('/chats');
     } catch (err) {
       setError(err.message);
     }

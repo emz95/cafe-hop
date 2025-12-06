@@ -38,6 +38,13 @@ npm run dev
 ```
 
 7. **Navigate to [http://localhost:5174/](http://localhost:5174/)**
+
+### How To Test
+**End to End Tests with Cypress**
+```bash
+npx cypress run
+```
+Running tests resets all data in database.
    
 
 

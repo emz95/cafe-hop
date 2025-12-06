@@ -4,7 +4,7 @@ const cafe = require('../models/Cafe');
 
 const getCafes = asyncHandler(async (req, res) => {
     const cafes = await cafe.find({}).
-    sort({name: 1}).
+    sort({name: 1}). //sort alphabetically
     lean();
     res.status(200).json(cafes);
 });

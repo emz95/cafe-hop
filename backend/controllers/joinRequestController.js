@@ -34,13 +34,14 @@ const approveJoinRequest = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error('Join Request not found');
     }
-    
+    //find the post to get its title for chat name
     const doc = await Post.findById(joinRequest.post).select('cafeName').lean();
     const chatName = doc.cafeName;
     if (!doc) {
         res.status(404);
         throw new Error('Post not found');
       }
+      //create or update group chat to add members
     const groupChat = await GroupChat.findOneAndUpdate(
         {post: joinRequest.post},
         {

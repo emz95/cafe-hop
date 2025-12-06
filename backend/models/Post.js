@@ -27,7 +27,7 @@ const postSchema = new Schema({
         required: true
     },
 
-    isOpenToJoin: {
+    isOpenToJoin: { //determines whether or not any users have to send join requests to join trip
         type: Boolean, 
         default: false
     },

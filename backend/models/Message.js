@@ -8,7 +8,7 @@ const messageSchema = new Schema({
         ref: "User", 
         required: true,
     },
-    group: {
+    group: { //the group chat this message belongs to 
         type: Types.ObjectId, 
         ref: "GroupChat", 
         required: true, 

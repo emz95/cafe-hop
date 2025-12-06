@@ -3,6 +3,15 @@ const Post = require('../models/Post')
 const JoinRequest = require('../models/JoinRequest');
 const User = require('../models/User');
 
+
+/* The following function was heavily written using AI assistance 
+The prompt used was:
+"Write a singular express controller function using the asyncHandler notation 
+to retrieve all posts from the database that matching the following frontend filters: 
+Search bar text that matches cafeName, description, or location 
+Possible time filters: next 24 hours, next week, next month, all future posts
+The function should return the posts sorted by date ascending 
+*/
 const getPosts = asyncHandler(async (req, res) => {
     const {
         search,
@@ -48,7 +57,7 @@ const getPosts = asyncHandler(async (req, res) => {
 
     res.status(200).json(posts)
 })
-
+//create a post
 const createPost = asyncHandler(async (req, res) => {
     if (!req.user || !req.user.id) {
         res.status(401);
@@ -67,7 +76,7 @@ const createPost = asyncHandler(async (req, res) => {
     }
     res.status(201).json(post)
 })
-
+//delete a post
 const deletePost = asyncHandler( async (req, res) => {
     if (!req.user || !req.user.id) {
         res.status(401);
@@ -108,6 +117,7 @@ const editPost = asyncHandler( async (req, res) => {
 
 })
 
+//get posts for a specific user
 const getUserPosts = asyncHandler( async (req, res)=> {
     const userId = req.params.id
     const posts = await Post.find({author: userId})

@@ -6,7 +6,7 @@ const User = require('../models/User');
 
 /* The following function was heavily written using AI assistance 
 The prompt used was:
-"Write an express controller function using the asyncHandler notation 
+"Write a singular express controller function using the asyncHandler notation 
 to retrieve all posts from the database that matching the following frontend filters: 
 Search bar text that matches cafeName, description, or location 
 Possible time filters: next 24 hours, next week, next month, all future posts

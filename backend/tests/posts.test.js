@@ -25,6 +25,7 @@ describe("POST /api/posts", () => {
         Post.create.mockResolvedValue(fakePost);
         const response = await request(app)
         .post("/api/posts")
+        //AI generated post creation data
         .send({
             author: "John", 
             title: "Hello World",
@@ -35,6 +36,7 @@ describe("POST /api/posts", () => {
         });
         expect(response.statusCode).toBe(201);
         expect(response.body).toEqual(fakePost);
+         
         expect(Post.create).toHaveBeenCalledWith({
             author: "John", 
             title: "Hello World",
@@ -51,6 +53,7 @@ describe("POST /api/posts", () => {
 describe("GET /api/posts", () => {
 
     test("should return list of all posts", async () => {
+        //AI generated post creation data
         const fakePosts = [
             {
                 _id: "abc123",
@@ -89,6 +92,7 @@ describe("GET /api/posts", () => {
 describe("GET /api/posts/:id", () => {
     test("Should fetch a particular post based on its id", async () => {
         const fakeId = "abc123";
+        //AI generated post creation data
         const fakePost =
             {
                 _id: fakeId,

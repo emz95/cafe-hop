@@ -12,6 +12,7 @@ const createMessage = asyncHandler(async (req, res) => {
 
 })
 
+//given a group chat ID, get all messages for that group chat
 const getMessagesByGroupChat = asyncHandler(async (req, res) => {
     const messages = await Message.find({group: req.params.groupChatId}).
     sort({createdAt: -1}).

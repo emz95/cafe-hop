@@ -3,11 +3,13 @@ const asyncHandler = require('express-async-handler');
 const cafeReview = require('../models/CafeReview');
 const Cafe = require('../models/Cafe');
 
+
+//retrieves all Cafes in the database
 const getCafes = asyncHandler(async (req, res) => {
     const cafes = await Cafe.find()
     res.status(200).json(cafes)
 })
-
+//create a cafe review for a selected cafe
 const createReview = asyncHandler(async (req, res) => {
     const review = await cafeReview.create({
         cafe: req.body.cafe,
@@ -24,9 +26,11 @@ const createReview = asyncHandler(async (req, res) => {
 
 });
 
+
+//retrieve all reviews for a specific cafe
 const getReviewsByCafe = asyncHandler(async (req, res) => {
     const reviews = await cafeReview.find({cafe: req.params.cafeId}).
-    select('reviewer rating photos description createdAt').
+    select('reviewer rating photos description createdAt'). //populates all necessary fields for frontend
     populate('reviewer', 'username _id profilePictureUrl').
     sort({createdAt: -1}).
     lean();

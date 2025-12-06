@@ -23,6 +23,7 @@ const Post = require('../models/Post');
 
 describe('POST /api/joinRequest', () => {
     test('create a join request and return status 201', async () => {
+        //AI generated join request data
 
         const fakeJoinRequest = {
             requester: "John",
